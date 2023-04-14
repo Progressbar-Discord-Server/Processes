@@ -1,13 +1,11 @@
-import type { Command } from "../base.js";
-import { CommandInteraction, PermissionFlagsBits, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from "discord.js";
 
+export const name = "ban";
 export const slash = new SlashCommandBuilder()
-  .setName("ban")
-  .setDescription("Ban a member")
   .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
   .addUserOption(o => o
-    .setDescription("The member to ban")
     .setName("member")
+    .setDescription("The member to ban")
     .setRequired(true))
   .addStringOption(o => o
     .setName("reason")
@@ -18,13 +16,21 @@ export const slash = new SlashCommandBuilder()
     .setDescription("Is this command a joke command?")
     .setRequired(true))
   .addBooleanOption(o => o
-    .setName(""))
+    .setName("appeal")
+    .setDescription("Send the appeal")
+    .setRequired(true))
   .addNumberOption(o => o
     .setName("time")
-    .setDescription("How long to ban this member?"));
+    .setDescription("How long to ban this member?"))
+  .setName("ban")
+  .setDescription("Ban a member");
 
-export function func(interaction: CommandInteraction, entry: Command) {
-  interaction.options.getUser("");
+export async function execute(interaction: ChatInputCommandInteraction) {
+  interaction.deferReply();
+  const member = interaction.options.getUser("member");
+  if (!member) return interaction.editReply("I need a member to ban!")
+
+  const reason = interaction.options.getString("reason") || "";
+  await interaction.guild?.bans.create(member, { reason })
+  interaction.editReply(`${escapeMarkdown(member.tag)} has been banned.`)
 }
-
-export const name = "";
