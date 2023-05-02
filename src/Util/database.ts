@@ -1,10 +1,11 @@
 import Sequelize from 'sequelize';
 
-const sequelize = new Sequelize.Sequelize('database', 'user', (await import("../config.js")).sequelize.password, {
+const conf = (await import("../config.js")).sequelize
+
+const sequelize = new Sequelize.Sequelize(conf.database, conf.username, conf.password, {
   host: 'localhost',
-  dialect: 'sqlite',
+  dialect: 'mysql',
   logging: false,
-  storage: 'database.sqlite'
 })
 
 export const Star = sequelize.define('message', {
