@@ -1,6 +1,6 @@
 import { REST, Routes, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import { pathToFileURL } from "url";
-import { getAllCommands } from "./GetFiles";
+import { getAllInteractions } from "./GetFiles";
 
 export async function send(commands: RESTPostAPIApplicationCommandsJSONBody[], token: string) {
   const rest = new REST({ version: '10' }).setToken(token);
@@ -18,7 +18,7 @@ export async function send(commands: RESTPostAPIApplicationCommandsJSONBody[], t
 
 if (import.meta.url !== pathToFileURL(process.argv[1]).href) {
   const { bot: { token } } = await import("./config");
-  const commands = (await getAllCommands()).map(e => e.slash.toJSON());
+  const commands = (await getAllInteractions()).map(e => e.data.toJSON());
 
   send(commands, token)
 }

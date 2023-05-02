@@ -12,9 +12,9 @@ export async function execute(interaction: BaseInteraction): Promise<void> {
   // Defining functions
   async function checkCommand(interaction: ChatInputCommandInteraction) {
     const client: Client = interaction.client;
-    if (client.commands == undefined) return;
+    if (client.interactions == undefined) return;
     
-    const command = client.commands.get(interaction.commandName);
+    const command = client.interactions.get(interaction.commandName);
     if (command == undefined) return;
   
     await command.execute(interaction);

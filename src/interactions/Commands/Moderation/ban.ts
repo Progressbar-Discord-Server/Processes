@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from "discord.js";
 
 export const name = "ban";
-export const slash = new SlashCommandBuilder()
+export const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
   .addUserOption(o => o
     .setName("member")

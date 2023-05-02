@@ -1,7 +1,8 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js"
 
 export const name = "test";
-export const slash = new SlashCommandBuilder()
+export const beta = true;
+export const data = new SlashCommandBuilder()
   .setName("test")
   .setDescription("Test the bot");
 

@@ -1,8 +1,8 @@
-import type { Command } from "./commands/base.js";
-import type { ContextMenu } from "./contextMenu/base.js"
+import type { Interaction } from "./interactions/base.js";
 import { Client as djsClient, Collection } from "discord.js";
+import { Model, ModelStatic } from "sequelize"
 
 export class Client extends djsClient {
-  commands?: Collection<string, Command> = new Collection();
-  contextMenu?: Collection<string, ContextMenu> = new Collection();
+  interactions?: Collection<string, Interaction> = new Collection();
+  db?: Record<string, ModelStatic<Model<any, any>>>
 }

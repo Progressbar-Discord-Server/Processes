@@ -1,8 +1,8 @@
 import type { Client } from "./Client.js";
-import { getAllCommands, getAllEvents } from "./GetFiles.js";
+import { getAllInteractions, getAllEvents } from "./GetFiles.js";
 
 export async function load(client: Client) {
-  client.commands = await getAllCommands();
+  client.interactions = await getAllInteractions();
   await getAllEvents(client).catch(e => {
     console.error(e);
   })
