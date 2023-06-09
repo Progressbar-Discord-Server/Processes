@@ -1,10 +1,8 @@
 import { ChatInputCommandInteraction, BaseInteraction } from "discord.js";
 import { Client } from "../../Client";
+import { Events } from "../base";
 
-export const name = "interactionCreate";
-export const once = false;
-
-export async function execute(interaction: BaseInteraction): Promise<void> {
+async function execute(client: Client, interaction: BaseInteraction): Promise<void> {
   if (interaction instanceof ChatInputCommandInteraction) {
     await checkCommand(interaction);
   }
@@ -14,9 +12,11 @@ export async function execute(interaction: BaseInteraction): Promise<void> {
     const client: Client = interaction.client;
     if (client.interactions == undefined) return;
     
-    const command = client.interactions.get(interaction.commandName);
+    const command = client.interactions.get("commands")?.get(interaction.commandName);
     if (command == undefined) return;
   
     await command.execute(interaction);
   }
 }
+
+export default new Events("interactionCreate", execute)

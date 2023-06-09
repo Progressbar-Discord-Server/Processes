@@ -1,8 +1,13 @@
-import { Awaitable } from "discord.js";
+import { Client } from "../Client";
 
-export interface Events {
+export class Events {
   name: string;
   once: boolean;
-  
-  execute(...args: unknown[]): Awaitable<void>;
+  execute: (client: Client, ...args: any[]) => any;
+
+  constructor(name: string, execute: (client: Client, ...args: any[]) => any, once?: boolean) {
+    this.name = name;
+    this.once = once || false;
+    this.execute = execute;
+  }
 }

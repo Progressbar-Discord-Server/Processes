@@ -1,7 +1,7 @@
 import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from "discord.js";
+import { Interaction } from "../../base.js";
 
-export const name = "ban";
-export const data = new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
   .addUserOption(o => o
     .setName("member")
@@ -25,7 +25,7 @@ export const data = new SlashCommandBuilder()
   .setName("ban")
   .setDescription("Ban a member");
 
-export async function execute(interaction: ChatInputCommandInteraction) {
+async function execute(interaction: ChatInputCommandInteraction) {
   interaction.deferReply();
   const member = interaction.options.getUser("member");
   if (!member) return interaction.editReply("I need a member to ban!")
@@ -34,3 +34,5 @@ export async function execute(interaction: ChatInputCommandInteraction) {
   await interaction.guild?.bans.create(member, { reason })
   interaction.editReply(`${escapeMarkdown(member.tag)} has been banned.`)
 }
+
+export default new Interaction(data, execute)

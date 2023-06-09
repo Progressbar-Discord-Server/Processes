@@ -1,11 +1,9 @@
 import type { OAuth2Guild, Collection } from "discord.js";
-import type { Client } from "../Client";
-import { ProcessDOS } from "../dos/main.js"
+import type { Client } from "../../Client";
+import { ProcessDOS } from "../../dos/main.js"
+import { Events } from "../base";
 
-export const once = true;
-export const name = "ready";
-
-export async function execute(client: Client): Promise<void> {
+async function execute(client: Client): Promise<void> {
   console.log(`Connected as ${client.user?.tag}`);
 
   const guilds = await client.guilds.fetch();
@@ -23,4 +21,14 @@ export async function execute(client: Client): Promise<void> {
       console.log(`Fetched all channels from ${guild.name}.`)
     }
   }
+
+  process.on("uncaughtException", (error) => {
+    console.error(error);
+  });
+
+  process.on("unhandledRejection", (error) => {
+    console.error(error);
+  });
 }
+
+export default new Events("ready", execute)

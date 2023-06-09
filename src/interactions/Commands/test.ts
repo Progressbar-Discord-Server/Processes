@@ -1,11 +1,12 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js"
+import { Interaction } from "../base.js";
 
-export const name = "test";
-export const beta = true;
-export const data = new SlashCommandBuilder()
+const data = new SlashCommandBuilder()
   .setName("test")
   .setDescription("Test the bot");
 
-export async function execute(interaction: ChatInputCommandInteraction): Promise<void> {
+async function execute(interaction: ChatInputCommandInteraction): Promise<void> {
   interaction.reply({ content: "Well, TS Processes works!" });
 }
+
+export default new Interaction(data, execute, true)
