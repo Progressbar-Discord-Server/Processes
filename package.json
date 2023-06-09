@@ -1,18 +1,23 @@
 {
-  "name": "a-discord-bot",
+  "name": "typescript-processes",
   "version": "1.0.0",
   "description": "",
   "main": "dist/main.js",
   "type": "module",
   "scripts": {
-    "build": "npm i && tsc",
-    "start": "node dist/main.js"
+    "build": "npm i && tsc -b",
+    "run": "node dist/main.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "discord bot",
+    "bot",
+    "discord"
+  ],
+  "author": "5jiji",
   "license": "ISC",
   "dependencies": {
     "discord.js": "^14.8.0",
+    "mysql2": "^3.3.3",
     "sequelize": "^6.31.0"
   },
   "devDependencies": {
