@@ -1,8 +1,8 @@
 import { ChatInputCommandInteraction, BaseInteraction } from "discord.js";
 import { Client } from "../../Client";
-import { Events } from "../base";
+import { Events } from "../base.js";
 
-async function execute(client: Client, interaction: BaseInteraction): Promise<void> {
+async function execute(interaction: BaseInteraction): Promise<void> {
   if (interaction instanceof ChatInputCommandInteraction) {
     await checkCommand(interaction);
   }

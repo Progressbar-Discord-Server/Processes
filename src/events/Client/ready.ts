@@ -1,7 +1,7 @@
 import type { OAuth2Guild, Collection } from "discord.js";
 import type { Client } from "../../Client";
 import { ProcessDOS } from "../../dos/main.js"
-import { Events } from "../base";
+import { Events } from "../base.js";
 
 async function execute(client: Client): Promise<void> {
   console.log(`Connected as ${client.user?.tag}`);

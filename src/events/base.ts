@@ -5,7 +5,7 @@ export class Events {
   once: boolean;
   execute: (client: Client, ...args: any[]) => any;
 
-  constructor(name: string, execute: (client: Client, ...args: any[]) => any, once?: boolean) {
+  constructor(name: string, execute: (...args: any[]) => any, once?: boolean) {
     this.name = name;
     this.once = once || false;
     this.execute = execute;
