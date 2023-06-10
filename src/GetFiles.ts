@@ -1,10 +1,14 @@
 import type { Client } from "./Client.js";
-import type { Events } from "./events/base.js";
-import type { Interaction } from "./interactions/base.js";
-import type { DOSCommands } from './dos/commands/base';
 import { Collection } from "discord.js";
 import { readdir } from "fs/promises";
 import { URL, fileURLToPath } from "url";
+// Events
+import type { Events } from "./events/base.js";
+// Interactions
+import type { Interaction } from "./interactions/base.js";
+// Dos
+import type { DOSCommands } from './dos/commands/base';
+// Database
 
 async function getAllFiles<T>(path: string, array: T[] = []): Promise<Set<T>> {
   const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -34,36 +38,49 @@ async function getAllFiles<T>(path: string, array: T[] = []): Promise<Set<T>> {
   return new Set(array);
 }
 
-export async function getAllInteractions() {
-  const commands = await getAllFiles<Interaction>("interactions");
-  const CollectionCommand = new Collection<string, Interaction>();
+export async function getAllInteractions(log = false) {
 
-  for (const command of commands) {
-    CollectionCommand.set(command.name, command);
+  const commandsInteractions = await getAllFiles<Record<"default", Interaction>>("interactions/Commands");
+  const CollectionCommands = new Collection<string, Interaction>();
+  const contextInteractions = await getAllFiles<Record<"default", Interaction>>("interactions/ContextMenu")
+  const CollectionContext = new Collection<string, Interaction>();
+
+  for (const { default: command } of commandsInteractions) {
+    if (command.data.name) CollectionCommands.set(command.data.name, command);
+    if (log) console.log(`Initiated Command "${command.data.name}"`)
   }
 
-  return CollectionCommand;
+  for (const { default: context } of contextInteractions) {
+    if (context.data.name) CollectionContext.set(context.data.name, context);
+    if (log) console.log(`Initiated Context menu "${context.data.name}"`);
+  }
+
+
+  return [CollectionCommands, CollectionContext];
 }
 
-export async function getAllEvents(client: Client) {
-  const events = await getAllFiles<Events>("events");
+export async function getAllEvents(client: Client, log = false) {
+  const events = await getAllFiles<Record<"default", Events>>("events");
 
-  for (const event of events) {
+  for (const {default: event} of events) {
     if (event.once) client.once(event.name, event.execute);
     else if (!event.once) client.on(event.name, event.execute);
+    if (log) console.log(`Initiated event ${event.name}`)
   }
 }
 
 export async function getAllDOSCommands() {
-  const DosCommands = await getAllFiles<DOSCommands>("dos/commands");  
+  const DosCommands = await getAllFiles<Record<"default", DOSCommands>>("dos/commands");
   const CollectionDosCommands = new Collection<string, DOSCommands>()
 
-  for (const DosCommand of DosCommands) {
+  for (const {default: DosCommand} of DosCommands) {
     if (typeof DosCommand.name === "string") CollectionDosCommands.set(DosCommand.name, DosCommand)
-    else if (DosCommand.name instanceof Array) 
+    
+    else if (DosCommand.name instanceof Array) {
       for (const name of DosCommand.name) {
         CollectionDosCommands.set(name, DosCommand)
       }
+    }
   }
 
   return CollectionDosCommands

@@ -1,8 +1,8 @@
-import { REST, Routes, RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
+import { REST, Routes } from "discord.js";
 import { pathToFileURL } from "url";
-import { getAllInteractions } from "./GetFiles";
+import { getAllInteractions } from "./GetFiles.js";
 
-export async function send(commands: RESTPostAPIApplicationCommandsJSONBody[], token: string) {
+export async function send(commands: any[], token: string) {
   const rest = new REST({ version: '10' }).setToken(token);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const clientId = await rest.get(Routes.user()).then(e => {
@@ -17,8 +17,9 @@ export async function send(commands: RESTPostAPIApplicationCommandsJSONBody[], t
 }
 
 if (import.meta.url !== pathToFileURL(process.argv[1]).href) {
-  const { bot: { token } } = await import("./config");
-  const commands = (await getAllInteractions()).map(e => e.data.toJSON());
+  const { bot: { token } } = await import("./config.js");
+  const commands: any[] = [];
+  (await getAllInteractions()).flat().forEach(e => e.map(e => commands.push(e.data.toJSON())));
 
   send(commands, token)
 }
