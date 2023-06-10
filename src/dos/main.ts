@@ -37,11 +37,16 @@ export async function ProcessDOS(client: Client) {
     const commandName = line.trim().split(" ")[0];
     const command = commands.get(commandName);
     
+    if (line.trim() === "eval commands")
+      return console.log(commands)
+    
+
     if (!command) {
       console.log("Bad command or file name");
       return
     }
     
+
     const maybeConfig = await command.execute(config, client, line.trim().split(" ").slice(1)).catch(console.log)
     
     if (maybeConfig) config = maybeConfig;

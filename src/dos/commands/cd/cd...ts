@@ -1,7 +1,7 @@
 import { DOSCommands } from "../base.js";
 import type { Config } from "../../config";
 
-export default new DOSCommands("cd..", (config: Config) => {
+export default new DOSCommands("cd..", async (config: Config) => {
   if (config.depth == 0) return
   config.depth--;
   config.drives.dir.pop();

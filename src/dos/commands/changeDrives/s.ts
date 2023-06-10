@@ -1,7 +1,7 @@
 import { DOSCommands } from "../base.js";
 import type { Config } from "../../config";
 
-export default new DOSCommands(["s:", "S:"], (config: Config) => {
+export default new DOSCommands(["s:", "S:"], async (config: Config) => {
   config.drives.current = 'S';
   config.drives.S.current = "";
   config.drives.label = 'SERVERS';

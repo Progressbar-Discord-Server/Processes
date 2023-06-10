@@ -1,6 +1,6 @@
 import { DOSCommands } from "./base.js"
 
-export default new DOSCommands(["help", "man"], () => {
+export default new DOSCommands(["help", "man"], async () => {
   const log = console.log
   log("Process DOS help")
   log("Commands:\n")
