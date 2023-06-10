@@ -1,5 +1,3 @@
-export const name = ["cls", "clear"]
+import { DOSCommands } from "./base.js";
 
-export async function execute() {
-  console.clear();
-}
+export default new DOSCommands(["cls", "clear"], console.clear)

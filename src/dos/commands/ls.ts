@@ -1,10 +1,9 @@
+import { DOSCommands } from "./base.js";
 import type { Client } from "../../Client";
 import type { Config } from "../config";
 import { readdir } from "node:fs/promises";
 
-export const name = ["dir", "ls"]
-
-export async function execute(client: Client, config: Config) {
+export default new DOSCommands(["dir", "ls"], async (config: Config, client: Client) => {
   console.log(`\n Volume in drive ${config.drives.current} is ${config.drives.label}`)
   console.log(` Volume Serial Number is 298A-E8CC`)
   console.log(` Directory of ${config.drives.current}:${config.drives.dir.join("")}\n`)
@@ -36,4 +35,4 @@ export async function execute(client: Client, config: Config) {
       break;
     }
   }
-}
+})

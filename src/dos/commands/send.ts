@@ -1,10 +1,9 @@
+import { DOSCommands } from "./base.js";
 import type { Client } from "../../Client";
 import type { Config } from "../config";
 import { CategoryChannel, PartialGroupDMChannel, ForumChannel } from "discord.js";
 
-export const name = "send";
-
-export async function execute(client: Client, config: Config, args: string[] ) {
+export default new DOSCommands("send", async (config: Config, client: Client, args: string[] ) => {
   console.log(args)
   if (args.length > 2) {
     console.log("You have to provide at least 2 argument: <channel id> <message>")
@@ -16,6 +15,7 @@ export async function execute(client: Client, config: Config, args: string[] ) {
     console.log(`No channel exist with id: '${args[0]}'!`);
     return;
   }
+
   if (
     channel instanceof CategoryChannel ||
     channel instanceof PartialGroupDMChannel ||
@@ -25,4 +25,4 @@ export async function execute(client: Client, config: Config, args: string[] ) {
     return;
   }
   channel.send(args.slice(1).join(" "))
-}
+})

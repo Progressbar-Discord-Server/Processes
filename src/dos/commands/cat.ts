@@ -1,10 +1,9 @@
+import { DOSCommands } from "./base.js";
 import type { Client } from "../../Client";
 import type { Config } from "../config";
 import { readFile } from "node:fs/promises";
 
-export const name = ["type", "cat"]
-
-export async function execute(client: Client, config: Config, args: string[]) {
+export default new DOSCommands(["type", "cat"], async (config: Config, client: Client, args: string[]) => {
   const file = args.join(" ");
   if (!file) {
     console.log('Required parameter missing');
@@ -24,4 +23,4 @@ export async function execute(client: Client, config: Config, args: string[]) {
       console.log(data + "\n")
     }
   }
-}
+});

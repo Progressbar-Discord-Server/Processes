@@ -3,13 +3,13 @@ import type { Interface } from "readline/promises";
 
 interface drvS {
   rootdirs: Collection<string, Guild>,
-  subdirs: Guild | undefined,
-  current: string | undefined
+  subdirs: Guild | null,
+  current: string | null
 }
 
 interface drvC {
   rootdirs: string[],
-  subdirs: string[] | undefined,
+  subdirs: string[] | null,
   current: string
 }
 

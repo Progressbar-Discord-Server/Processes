@@ -1,10 +1,9 @@
+import { DOSCommands } from "./base.js";
 import type { Client } from "../../Client";
 import type { Config } from "../config";
 import { CategoryChannel } from "discord.js";
 
-export const name = "tail";
-
-export async function execute(client: Client, config: Config, args: string[]) {
+export default new DOSCommands("tail", async (config: Config, client: Client, args: string[]) => {
   if (config.drives.current === "C" || config.drives.S.current == null) {
     console.log("Please, enter a server in the 'S' drive");
     return;
@@ -26,4 +25,4 @@ export async function execute(client: Client, config: Config, args: string[]) {
   for (const [,e] of await server.messages.fetch({ limit: MessageAmount })) {
     console.log(`${e.id.padEnd(20)}${e.author.tag.padEnd(13)}${e.content}`)
   }
-}
+})

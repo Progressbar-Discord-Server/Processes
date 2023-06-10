@@ -1,9 +1,8 @@
+import { DOSCommands } from "./base.js";
 import type { Client } from "../../Client";
 import type { Config } from "../config";
 
-export const name = "status";
-
-export async function execute(client: Client, config: Config, args: string[]) {
+export default new DOSCommands("status", (config: Config, client: Client, args: string[]) => {
   if (args.join("").trim() == "") client.user?.setActivity()
 
   const status = args[1]
@@ -15,4 +14,4 @@ export async function execute(client: Client, config: Config, args: string[]) {
   // @ts-expect-error
   client.user?.setStatus(status);
 
-}
+})

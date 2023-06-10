@@ -1,3 +1,4 @@
-export const name = ""
+import { DOSCommands } from "./base.js"
+
 // eslint-disable-next-line @typescript-eslint/no-empty-function
-export async function execute() {}
+export default new DOSCommands("", () => {})

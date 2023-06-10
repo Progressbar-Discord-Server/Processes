@@ -1,13 +1,12 @@
+import { DOSCommands } from "./base.js"
 import type { Client } from "../../Client"
 import type { Config } from "../config"
 
-export const name = "eval"
-
-export async function execute(client: Client, config: Config, args: string[]) {
+export default new DOSCommands("eval", async (config: Config, client: Client, args: string[]) => {
   try {
     console.log(await eval(`${args.join(" ")}`))
   } catch (error) {
     console.error(error)
   }
   return config;
-}
+})

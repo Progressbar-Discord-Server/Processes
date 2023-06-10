@@ -13,12 +13,12 @@ export async function ProcessDOS(client: Client) {
       current: "S",
       S: {
         rootdirs: client.guilds.cache,
-        subdirs: undefined,
+        subdirs: null,
         current: ""
       },
       C: {
         rootdirs: await readdir(`${(await import("node:url")).fileURLToPath(new URL(".", import.meta.url))}../interactions`),
-        subdirs: undefined,
+        subdirs: null,
         current: ""
       },
       label: "SERVERS",
@@ -42,7 +42,7 @@ export async function ProcessDOS(client: Client) {
       return
     }
     
-    const maybeConfig = await command.execute(client, config, line.trim().split(" ").slice(1)).catch(console.log)
+    const maybeConfig = await command.execute(config, client, line.trim().split(" ").slice(1)).catch(console.log)
     
     if (maybeConfig) config = maybeConfig;
 

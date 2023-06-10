@@ -1,18 +1,16 @@
+import { DOSCommands } from "../base.js";
 import type { Client } from "../../../Client";
 import type { Config } from "../../config";
 import { access } from "node:fs/promises";
 
-export const name = "cd"
-
-export async function execute(client: Client, config: Config, args: string[]) {
-
+export default new DOSCommands("cd", async (config: Config, client: Client, args: string[]) => {
   const newDir = args.join(" ")
   if (newDir === "..") {
     if (config.depth == 0) return
     config.depth--;
     config.drives.dir.pop();
     if (config.drives.dir.length > 1) config.drives.dir.pop();
-    config.drives.S.current = undefined;
+    config.drives.S.current = null;
     config.drives.C.current = "";
     return config;
   }
@@ -61,4 +59,4 @@ export async function execute(client: Client, config: Config, args: string[]) {
       }
     }
   }
-}
+})

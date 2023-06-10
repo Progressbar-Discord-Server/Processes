@@ -1,9 +1,7 @@
-import type { Client } from "../../../Client";
+import { DOSCommands } from "../base.js";
 import type { Config } from "../../config";
 
-export const name = ["s:", "S:"];
-
-export async function execute(client: Client, config: Config) {
+export default new DOSCommands(["s:", "S:"], (config: Config) => {
   config.drives.current = 'S';
   config.drives.S.current = "";
   config.drives.label = 'SERVERS';
@@ -11,4 +9,4 @@ export async function execute(client: Client, config: Config) {
   config.drives.dir = ["\\"];
 
   return config;
-}
+})
