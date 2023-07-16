@@ -1,3 +1,8 @@
 import { DOSCommands } from "./base.js";
 
-export default new DOSCommands(["cls", "clear"], async () => console.clear())
+class Clear extends DOSCommands {
+  public name = ["cls", "clear"];
+  public execute = async () => console.clear();
+}
+
+export default new Clear();

@@ -1,6 +1,8 @@
 import { REST, Routes } from "discord.js";
 import { pathToFileURL } from "url";
 import { getAllInteractions } from "./GetFiles.js";
+import { bot } from "./config.js";
+const { beta: pushBetaCommands } = bot;
 
 export async function send(commands: any[], token: string) {
   const rest = new REST({ version: '10' }).setToken(token);
@@ -19,7 +21,11 @@ export async function send(commands: any[], token: string) {
 if (import.meta.url !== pathToFileURL(process.argv[1]).href) {
   const { bot: { token } } = await import("./config.js");
   const commands: any[] = [];
-  (await getAllInteractions()).flat().forEach(e => e.map(e => commands.push(e.data.toJSON())));
+  (await getAllInteractions()).forEach(e => e.map(e => {
+    const betaStatus = e.beta || false;
+    const enable = e.enable || true;
+    if (!pushBetaCommands && betaStatus && enable || enable && pushBetaCommands) commands.push(e.data)
+  }));
 
   send(commands, token)
 }

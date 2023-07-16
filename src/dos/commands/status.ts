@@ -2,16 +2,21 @@ import { DOSCommands } from "./base.js";
 import type { Client } from "../../Client";
 import type { Config } from "../config";
 
-export default new DOSCommands("status", async (config: Config, client: Client, args: string[]) => {
-  if (args.join("").trim() == "") client.user?.setActivity()
+class Status extends DOSCommands {
+  public name = "status";
+  public execute = async (config: Config, client: Client, args: string[]) => {
+    if (args.join("").trim() == "") client.user?.setActivity()
 
-  const status = args[1]
-  const activity = args[2].toUpperCase()
-  const description = args.slice(3).join(" ")
+    const status = args[1]
+    const activity = args[2].toUpperCase()
+    const description = args.slice(3).join(" ")
 
-  // @ts-expect-error
-  client.user?.setActivity(description, { type: activity });
-  // @ts-expect-error
-  client.user?.setStatus(status);
+    // @ts-expect-error
+    client.user?.setActivity(description, { type: activity });
+    // @ts-expect-error
+    client.user?.setStatus(status);
 
-})
+  }
+}
+
+export default new Status();

@@ -39,7 +39,6 @@ async function getAllFiles<T>(path: string, array: T[] = []): Promise<Set<T>> {
 }
 
 export async function getAllInteractions(log = false) {
-
   const commandsInteractions = await getAllFiles<Record<"default", Interaction>>("interactions/Commands");
   const CollectionCommands = new Collection<string, Interaction>();
   const contextInteractions = await getAllFiles<Record<"default", Interaction>>("interactions/ContextMenu")
@@ -55,7 +54,6 @@ export async function getAllInteractions(log = false) {
     if (log) console.log(`Initiated Context menu "${context.data.name}"`);
   }
 
-
   return [CollectionCommands, CollectionContext];
 }
 
@@ -63,8 +61,8 @@ export async function getAllEvents(client: Client, log = false) {
   const events = await getAllFiles<Record<"default", Events>>("events");
 
   for (const {default: event} of events) {
-    if (event.once) client.once(event.name, event.execute);
-    else if (!event.once) client.on(event.name, event.execute);
+    if (event.once) client.once(event.name, event.execute.bind(event));
+    else if (!event.once) client.on(event.name, event.execute.bind(event));
     if (log) console.log(`Initiated event ${event.name}`)
   }
 }

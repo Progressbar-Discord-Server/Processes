@@ -1,4 +1,9 @@
 import { DOSCommands } from "./base.js"
 
-// eslint-disable-next-line @typescript-eslint/no-empty-function
-export default new DOSCommands("", async () => {})
+class Default extends DOSCommands {
+  public name = "";
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  public execute = async () => {}
+}
+
+export default new Default();

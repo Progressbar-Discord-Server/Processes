@@ -19,7 +19,7 @@ export async function dbinit(client: Client) {
   for (const table of await readdir(`${__dirname}tables`)) {
     const data = await import(`${__dirname}tables/${table}`);
 
-    tables[table.split(".ts")[0]] = await data.init(database);
+    tables[data.name] = await data.init(database);
   }
 
   client.db = tables;

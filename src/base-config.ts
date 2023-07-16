@@ -10,3 +10,8 @@ export const sequelize = {
   username: "The username of the mysql database",
   password: "The password of the mysql user",
 }
+
+export const logging = {
+  channel: "Set a channel ID here! Will post logging informating like errors & warnings",
+  moderation: "Set a channel ID here: Will post all thing about moderation, ban log, timeout log, warn log, etc..."
+}

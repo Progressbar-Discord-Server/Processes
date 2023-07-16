@@ -1,5 +1,7 @@
 import { NUMBER, TEXT, STRING, Sequelize } from "sequelize";
 
+export const name = "cases";
+
 export function init(database: Sequelize) {
   return database.define('cases', {
     userID: {

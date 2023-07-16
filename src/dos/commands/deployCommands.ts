@@ -1,19 +1,25 @@
-import { DOSCommands } from "./base.js";
 import type { Client } from "../../Client.js";
 import type { RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
-import { Config } from "../config.js";
+import type { Config } from "../config.js";
+import { DOSCommands } from "./base.js";
 
-export default new DOSCommands("deploy", async (config: Config, client: Client) => {
+class DeployCommands extends DOSCommands {
+  public name = "deploy";
+  public execute = async (config: Config, client: Client) => {
   const { send } = await import("../../deployCommand.js");
-  const { bot: { beta } } = await import("../../config.js");
+  const { bot: { beta: pushBetaCommands } } = await import("../../config.js");
 
   const all: RESTPostAPIApplicationCommandsJSONBody[] = []
   if (client.interactions) client.interactions.forEach(e => {
     e.forEach(e => {
       const betaStatus = e.beta || false;
-      if (!beta && betaStatus || beta) all.push(e.data.toJSON())
+      const enable = e.enable || true;
+      if (!pushBetaCommands && betaStatus && enable || enable && pushBetaCommands) all.push(e.data)
     })
   });
 
   send(all, client.token ? client.token : (await import("../../config.js")).bot.token);
-})
+}
+}
+
+export default new DeployCommands();
