@@ -1,12 +1,12 @@
 import { DOSCommands } from "./base.js";
-import type { Client } from "../../Client";
+import type { ExtendedClient } from "../../Client";
 import type { Config } from "../config";
 import { readFile } from "node:fs/promises";
 
 class Cat extends DOSCommands {
   public name = ["type", "cat"];
 
-  public execute = async (config: Config, client: Client, args: string[]) => {
+  public execute = async (config: Config, client: ExtendedClient, args: string[]) => {
     const file = args.join(" ");
     if (!file) {
       console.log('Required parameter missing');

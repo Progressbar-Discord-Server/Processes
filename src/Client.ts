@@ -1,18 +1,19 @@
 import type { Interaction } from "./interactions/base.js";
-import { Client as djsClient, Collection, TextChannel } from "discord.js";
+import { Client, Collection, TextChannel } from "discord.js";
 import { Model, ModelStatic } from "sequelize"
 import PokerManager from "./managers/casino/luigisPoker.js";
 
-export class Client<Ready extends boolean = boolean> extends djsClient<Ready> {
-  interactions?: Map<string, Collection<string, Interaction>> = new Collection();
+export type ExtendedClient<Ready extends boolean = boolean> = Client<Ready> & {
+  interactions?: Map<string, Collection<string, Interaction>>;
   db?: Record<string, ModelStatic<Model<any, any>>>;
   config?: Config;
   logging?: {
-    error: TextChannel;
-    moderation: TextChannel;
+    error?: TextChannel;
+    moderation?: TextChannel;
   };
   managers?: Managers;
 }
+
 
 interface Managers {
   poker: PokerManager;
@@ -29,7 +30,7 @@ export interface Config {
     password: string,
   }
   logging: {
-    channel: string,
+    error: string,
     moderation: string
   }
   casino: {

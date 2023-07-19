@@ -1,26 +1,25 @@
 import { ChatInputCommandInteraction, BaseInteraction } from "discord.js";
-import { Client } from "../../Client";
+import { ExtendedClient } from "../../Client";
 import { Events } from "../base.js";
 
 class InteractionCreate extends Events {
   public name = "interactionCreate";
   public once = false;
 
-  public execute = async (client: Client, interaction: BaseInteraction): Promise<void> => {
+  async execute(interaction: BaseInteraction): Promise<void> {
     if (interaction instanceof ChatInputCommandInteraction) {
-      await checkCommand(interaction);
+      await this.checkCommand(interaction);
     }
+  }
+  
+  async checkCommand(interaction: ChatInputCommandInteraction) {
+    const client: ExtendedClient = interaction.client;
+    if (client.interactions == undefined) return;
 
-    // Defining functions
-    async function checkCommand(interaction: ChatInputCommandInteraction) {
-      const client: Client = interaction.client;
-      if (client.interactions == undefined) return;
+    const command = client.interactions.get("commands")?.get(interaction.commandName);
+    if (command == undefined) return;
 
-      const command = client.interactions.get("commands")?.get(interaction.commandName);
-      if (command == undefined) return;
-
-      await command.execute(interaction);
-    }
+    await command.execute(interaction);
   }
 }
 

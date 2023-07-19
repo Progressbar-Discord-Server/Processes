@@ -1,4 +1,4 @@
-import type { Client } from "./Client.js";
+import type { ExtendedClient } from "./Client.js";
 import { Collection } from "discord.js";
 import { readdir } from "fs/promises";
 import { URL, fileURLToPath } from "url";
@@ -57,7 +57,7 @@ export async function getAllInteractions(log = false) {
   return [CollectionCommands, CollectionContext];
 }
 
-export async function getAllEvents(client: Client, log = false) {
+export async function getAllEvents(client: ExtendedClient, log = false) {
   const events = await getAllFiles<Record<"default", Events>>("events");
 
   for (const {default: event} of events) {

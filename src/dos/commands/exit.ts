@@ -1,11 +1,11 @@
 import { DOSCommands } from "./base.js"
 import type { Config } from "../config"
-import type { Client } from "../../Client"
+import type { ExtendedClient } from "../../Client"
 import { env, exit } from "node:process"
 
 class Exit extends DOSCommands {
   public name = "exit";
-  public execute = async (config: Config, client: Client) => {
+  public execute = async (config: Config, client: ExtendedClient) => {
     if (!env.PM2_USAGE) {
       config.cmd.close()
       client.destroy()

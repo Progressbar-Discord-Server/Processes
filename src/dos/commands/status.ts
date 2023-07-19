@@ -1,10 +1,10 @@
 import { DOSCommands } from "./base.js";
-import type { Client } from "../../Client";
+import type { ExtendedClient } from "../../Client";
 import type { Config } from "../config";
 
 class Status extends DOSCommands {
   public name = "status";
-  public execute = async (config: Config, client: Client, args: string[]) => {
+  public execute = async (config: Config, client: ExtendedClient, args: string[]) => {
     if (args.join("").trim() == "") client.user?.setActivity()
 
     const status = args[1]
