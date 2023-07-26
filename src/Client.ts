@@ -1,7 +1,9 @@
+import type PokerManager from "./managers/casino/init.js";
+import type StarboardManager from "./managers/starboard/init.js";
 import type { Interaction } from "./interactions/base.js";
 import { Client, Collection, TextChannel } from "discord.js";
 import { Model, ModelStatic } from "sequelize"
-import PokerManager from "./managers/casino/luigisPoker.js";
+import { BaseManager } from "./managers/base.js";
 
 export type ExtendedClient<Ready extends boolean = boolean> = Client<Ready> & {
   interactions?: Map<string, Collection<string, Interaction>>;
@@ -14,9 +16,9 @@ export type ExtendedClient<Ready extends boolean = boolean> = Client<Ready> & {
   managers?: Managers;
 }
 
-
-interface Managers {
-  poker: PokerManager;
+type Managers = Record<string, BaseManager> & {
+  poker?: typeof PokerManager,
+  starboard?: typeof StarboardManager,
 }
 
 export interface Config {
@@ -44,5 +46,16 @@ export interface Config {
       cloud: string,
     },
     luigiHideCard: string,
+  }
+  starboard: {
+    enable: boolean,
+  }
+  socials: {
+    mastodon: {
+      enable: boolean
+    },
+  }
+  keys: {
+    pastee: string,
   }
 }

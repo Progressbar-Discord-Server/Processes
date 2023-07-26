@@ -5,7 +5,7 @@ import { createInterface } from 'readline/promises';
 import { stdin as input, stdout as output } from "node:process";
 import { getAllDOSCommands } from "../GetFiles.js";
 
-export async function ProcessDOS(client: ExtendedClient) {
+export async function ProcessDOS(client: ExtendedClient<true>) {
   const commands = await getAllDOSCommands();
   const cmd = createInterface(input, output);
   let config: Config = {
@@ -35,14 +35,13 @@ export async function ProcessDOS(client: ExtendedClient) {
 
   cmd.on('line', async line => {
     const commandName = line.trim().split(" ")[0];
-    const command = commands.get(commandName);
-    
+    if (commandName === "") return;
     if (line.trim() === "eval commands") return console.log(commands)
-
+    
+    const command = commands.get(commandName);
     if (!command) return console.log("Bad command or file name")
 
     const maybeConfig = await command.execute(config, client, line.trim().split(" ").slice(1)).catch(console.log)
-    
     if (maybeConfig) config = maybeConfig;
 
     cmd.setPrompt(`${config.drives.current}:${config.drives.dir.join("")}>`)

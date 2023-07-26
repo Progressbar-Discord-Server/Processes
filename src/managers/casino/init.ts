@@ -1,12 +1,17 @@
 import { Collection, EmbedBuilder, Snowflake } from "discord.js"
-import { BaseManager } from "../base";
+import { BaseManager } from "../base.js";
 import { casino } from "../../config.js";
+import { ExtendedClient } from "../../Client.js";
 
-export default class PokerManager extends BaseManager {
+export default new class PokerManager extends BaseManager {
   #games = new Collection<Snowflake, Hands>();
   protected cardsToEmbed: Record<string, string> = casino.cardsToEmbed;
   protected deck = ["star", "mario", "luigi", "fire", "mush", "cloud"] as const;
   public name = "poker";
+
+  public init(client: ExtendedClient) {
+    if (client.managers) client.managers.poker = this;
+  }
 
   public startNewGame(this: PokerManager, userID: Snowflake) {
     const deck = this.#shuffleDeck();

@@ -33,7 +33,7 @@ class Kick extends Interaction {
     const db = client.db?.cases;
 
     if (!interaction.inGuild()) return interaction.followUp("This command cannot be run in DMs.")
-    
+
     if (!db) return interaction.followUp("Couldn't obtain the db");
 
     let guild = interaction.guild
@@ -46,28 +46,30 @@ class Kick extends Interaction {
 
     if (!member) return interaction.followUp("The user couldn't be fetched.")
 
+    const avatar = member.user.avatarURL();
+    const username = member.user.discriminator === "#0" ? member.user.username : `${member.user.username}#${member.user.discriminator}`;
+
     const dmEmbed = new EmbedBuilder()
       .setColor("#f04a47")
       .setDescription(`**You have been kicked from ${guild.name} for**: ${reason}`);
     const replyEmbed = new EmbedBuilder()
       .setColor("#43b582")
-      .setDescription(`**${escapeMarkdown(member.user.tag)} has been kicked for:** ${reason}`);
+      .setDescription(`**${escapeMarkdown(username)} has been kicked for:** ${reason}`);
     const logEmbed = new EmbedBuilder()
-      .setDescription("Kick")
+      .setAuthor({ name: `Database error | Kick | ${username} | ${interaction.user.tag}`, iconURL: (avatar ? avatar : undefined) })
       .setColor("#f04a47")
+      .setTimestamp(new Date())
       .addFields(
-        { name: "**User**", value: escapeMarkdown(member.user.tag), inline: true },
+        { name: "**User**", value: escapeMarkdown(username), inline: true },
         { name: "**Moderator**", value: escapeMarkdown(interaction.user.tag), inline: true },
         { name: "**Reason**", value: reason, inline: true }
       );
 
     if (member.user.id === interaction.user.id) return interaction.followUp("Why do you want to kick yourself?")
-    if (member.user.id === interaction.client.user.id) return interaction.followUp("❌ Why would you kick me? 😢")
+    if (member.user.id === interaction.client.user.id) return interaction.followUp("Why would you kick me? 😢")
 
     if (member.kickable) {
-
-      // @ts-expect-error
-      await member.user.send({ embeds: [dmEmbed] }).catch(() => { console.error(`Couldn't message ${member.user.tag} (kick)`) })
+      await member.user.send({ embeds: [dmEmbed] }).catch(() => { console.error(`Couldn't message ${username} (kick)`) })
 
       if (!joke) {
         try {
@@ -77,12 +79,21 @@ class Kick extends Interaction {
           return interaction.followUp("Couldn't kick that user.")
         }
 
-        db.create({
+        const dbcr = db.create({
           Executor: interaction.user.id,
           userID: member.user.id,
           reason: reason,
           type: "kick",
-        });
+        }).catch(() => { });
+
+        if (!dbcr) {
+          const noDBEmbed = new EmbedBuilder()
+            .setTitle(`${escapeMarkdown(member.user.discriminator === "#0" ? member.user.username : member.user.username + "#" + member.user.discriminator)}`)
+            .setDescription("Database error, The case has not been saved")
+            .setColor("#ffff00");
+          if (client.logging?.moderation) await client.logging.moderation.send({ embeds: [logEmbed] })
+          return interaction.reply({ embeds: [noDBEmbed] });
+        }
 
         if (client.logging?.moderation) await client.logging.moderation.send({ embeds: [logEmbed] })
       }

@@ -1,14 +1,14 @@
-import type { OAuth2Guild, Collection, Channel } from "discord.js";
+import { OAuth2Guild, Collection, Channel } from "discord.js";
 import type { Config, ExtendedClient } from "../../Client";
 import { ProcessDOS } from "../../dos/main.js"
 import { Events } from "../base.js";
 import { errorToEmbed } from "../../util/errorConverter.js";
 
-class Ready extends Events {
+export default new class ClientReady extends Events {
   public name = "ready";
   public once = true;
 
-  public execute = async (client: ExtendedClient): Promise<void> => {
+  public execute = async (client: ExtendedClient<true>): Promise<void> => {
     console.log(`Connected as ${client.user?.tag}`);
 
     this.#setUpExtendedClient(client);
@@ -18,16 +18,14 @@ class Ready extends Events {
     await this.#fetchAllChannels(guilds);
     console.log("Every guilds has been loaded");
 
-    // Defining functions
-
     process.on("uncaughtException", (error) => {
       console.error(error);
-      if (client.logging?.error) client.logging.error.send({ embeds: [errorToEmbed(error, "uncaughtException")] });
+      if (client.logging?.error) client.logging.error.send({ embeds: [errorToEmbed(error, "uncaughtException")] }).catch();
     });
 
     process.on("unhandledRejection", (error) => {
       console.error(error);
-      if (client.logging?.error) client.logging.error.send({ embeds: [errorToEmbed(error, "unhandledRejection")] });
+      if (client.logging?.error) client.logging.error.send({ embeds: [errorToEmbed(error, "unhandledRejection")] }).catch();
     });
   }
 
@@ -53,10 +51,5 @@ class Ready extends Events {
       logging[name] = channel;
     }
     client.logging = logging;
-    
-    // set up client.managers
-
   }
 }
-
-export default new Ready();

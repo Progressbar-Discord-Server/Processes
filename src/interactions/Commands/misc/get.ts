@@ -104,31 +104,33 @@ class Get extends Interaction {
             });
 
             if (ArrName.length) {
-              await sendAsPaste(ArrName.join("\n"), interaction)
+              await this.sendAsPaste(ArrName.join("\n"), interaction)
             }
             else if (!ArrName.length) interaction.followUp("Why does not even a single role exist?");
             break
           }
           case "icon": {
             const guildRoles = await guild.roles.fetch();
-            const format = interaction.options.getString("format");
-            const size = interaction.options.getNumber("size") || undefined;
+            const extension = interaction.options.getString("format", true);
+            const size = interaction.options.getNumber("size", true);
             let name = interaction.options.getBoolean('name');
             if (name === null) name = true;
             const ArrayURL: string[] = [];
+            
+            if (!this.checksize(size) || !this.checkFormat(extension)) {
+              return interaction.followUp({content: "Somehow, size & format aren't correct...", ephemeral: true});
+            }
 
-            guildRoles.forEach(e => {
-              if (e.iconURL()) {
-                // @ts-expect-error
-                if (name) ArrayURL.push(`${e.iconURL({ format: format, size: size })} for ${e.name}`);
-                // @ts-expect-error
-                else if (!name) ArrayURL.push(`${e.iconURL({ format: format, size: size })}`);
-              }
-            });
+            for (const [, e] of guildRoles) {
+              if (!e.iconURL()) continue
+
+              if (name) ArrayURL.push(`${e.iconURL({ extension, size })} for ${e.name}`);
+              else if (!name) ArrayURL.push(`${e.iconURL({ extension, size })}`);
+            }
 
             if (ArrayURL.length) {
-              if (name) sendAsPaste(ArrayURL.join("\n"), interaction)
-              else if (!name) sendAsPaste(ArrayURL.join(""), interaction)
+              if (name) this.sendAsPaste(ArrayURL.join("\n"), interaction)
+              else if (!name) this.sendAsPaste(ArrayURL.join(""), interaction)
             }
             else if (!ArrayURL.length) interaction.followUp("No role found with an icon");
             break
@@ -145,7 +147,7 @@ class Get extends Interaction {
               if (hex && color !== '#000000' || !hex && color !== 0) ArrColor.push(`${color} for ${e.name}`);
             });
 
-            if (ArrColor.length) sendAsPaste(ArrColor.join("\n"), interaction);
+            if (ArrColor.length) this.sendAsPaste(ArrColor.join("\n"), interaction);
             else if (!ArrColor.length) interaction.followUp("No role found to have color");
             break
           }
@@ -188,8 +190,8 @@ class Get extends Interaction {
             });
 
             if (emojiArr.length) {
-              if (name) await sendAsPaste(emojiArr.join("\n"), interaction);
-              else if (!name) await sendAsPaste(emojiArr.join(' '), interaction);
+              if (name) await this.sendAsPaste(emojiArr.join("\n"), interaction);
+              else if (!name) await this.sendAsPaste(emojiArr.join(' '), interaction);
             }
             else if (!emojiArr.length) interaction.followUp({ content: "No emoji found" })
             break
@@ -207,8 +209,8 @@ class Get extends Interaction {
 
 
             if (stickersArr.length) {
-              if (name) sendAsPaste(stickersArr.join("\n"), interaction);
-              else if (!name) sendAsPaste(stickersArr.join(' '), interaction)
+              if (name) this.sendAsPaste(stickersArr.join("\n"), interaction);
+              else if (!name) this.sendAsPaste(stickersArr.join(' '), interaction)
             }
             else if (!stickersArr.length) interaction.followUp("No stickers found");
             break
@@ -218,27 +220,47 @@ class Get extends Interaction {
       }
     }
   }
-}
 
-async function sendAsPaste(data: string, interaction: ChatInputCommandInteraction) {
-  axios.post("https://api.paste.ee/v1/pastes", {
-    key: keys.pastee,
-    sections: [
-      { name: "Processes Data", contents: data }
-    ]
-  })
-    .then(r => {
-      if (r.data.success) interaction.followUp({ content: r.data.link })
-      else if (!r.data.success) {
-        console.error(r.data);
-        interaction.followUp("An error ocurred, Pls, check console")
-      }
+  async sendAsPaste(data: string, interaction: ChatInputCommandInteraction) {
+    axios.post("https://api.paste.ee/v1/pastes", {
+      key: keys.pastee,
+      sections: [
+        { name: "Processes Data", contents: data }
+      ]
     })
-    .catch(e => {
-      if (e.response) {
-        interaction.followUp({ content: `ERROR: \`${e.response.status}, ${e.response.data.errors[0].message}\`` })
-      }
-    });
+      .then(r => {
+        if (r.data.success) interaction.followUp({ content: r.data.link })
+        else if (!r.data.success) {
+          console.error(r.data);
+          interaction.followUp("An error ocurred, Pls, check console")
+        }
+      })
+      .catch(e => {
+        if (e.response) {
+          interaction.followUp({ content: `ERROR: \`${e.response.status}, ${e.response.data.errors[0].message}\`` })
+        }
+      });
+  }
+
+  checksize(size: number): size is 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096 {
+    switch (size) {
+      case 16:   case 32:   case 64:
+      case 128:  case 256:  case 512:
+      case 1024: case 2048: case 4096:
+        return true;
+      default: return false;
+    }
+  }
+
+  checkFormat(format: string): format is "webp" | "png" | "jpg" | "jpeg" | "gif" {
+    switch (format) {
+      case "webp": case "png":
+      case "jpg": case "jpeg":
+      case "gif":
+        return true;
+      default: return false;
+    }
+  }
 }
 
 export default new Get();

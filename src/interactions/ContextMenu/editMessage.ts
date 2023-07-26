@@ -1,41 +1,37 @@
-import { ContextMenuCommandBuilder, ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, MessageContextMenuCommandInteraction, ModalActionRowComponentBuilder } from "discord.js";
+import { ContextMenuCommandBuilder, ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, MessageContextMenuCommandInteraction, ModalActionRowComponentBuilder, ApplicationCommandType } from "discord.js";
 import { Interaction } from "../base.js";
 
 class EditMessage extends Interaction {
   public data = new ContextMenuCommandBuilder()
-  .setName('Edit Bot Message')
-  .setType(3)
-  .toJSON();
+    .setName('Edit Bot Message')
+    .setDMPermission(false)
+    .setType(ApplicationCommandType.Message)
+    .toJSON();
 
   public beta = false;
   public enable = true;
   public execute = async (interaction: MessageContextMenuCommandInteraction) => {
-    const message = interaction.targetMessage
-  
-    await message.fetch()
-  
-    if (message.author.id !== interaction.client.user.id)
-      return interaction.reply({content: `This isn't one of my message.\n Please chose a message from myself`, ephemeral: true});
-  
+    const message = interaction.targetMessage;
+
+    if (message.author.id !== interaction.client.user.id) return interaction.reply({ content: `This isn't one of my message.\n Please chose a message from myself`, ephemeral: true });
+
     const textInput = new TextInputBuilder()
-    .setCustomId("message")
-    .setLabel("message")
-    .setValue(message.content)
-    .setStyle(TextInputStyle.Paragraph)
-    .setRequired(true)
-  
+      .setCustomId(`new-message`)
+      .setLabel("message")
+      .setValue(message.content)
+      .setStyle(TextInputStyle.Paragraph)
+      .setRequired(true);
+
     const actionRow = new ActionRowBuilder<ModalActionRowComponentBuilder>()
-    .addComponents(textInput);
-    
+      .addComponents(textInput);
+
     const modal = new ModalBuilder()
-    .setCustomId(`edit-message-${message.id}`)
-    .setTitle("Edit Message")
-    .setComponents(actionRow);
-  
+      .setCustomId(`emes-${message.channelId}-${message.id}`)
+      .setTitle("Edit Message")
+      .setComponents(actionRow);
+
     await interaction.showModal(modal);
   }
 }
-
-
 
 export default new EditMessage();

@@ -1,11 +1,7 @@
-import { ChatInputCommandInteraction as djsChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Interaction } from "../../base.js";
-import { ExtendedClient } from "../../../Client.js";
 import { casino } from "../../../config.js";
-
-interface ChatInputCommandInteraction extends djsChatInputCommandInteraction {
-  client: ExtendedClient<true>,
-}
+import { ExtendedClient } from "../../../Client.js";
 
 class Poker extends Interaction {
   public data = new SlashCommandBuilder()
@@ -35,7 +31,7 @@ class Poker extends Interaction {
   public beta = false;
   public enable = casino.enable;
   public async execute(interaction: ChatInputCommandInteraction) {
-    const client = interaction.client;
+    const client: ExtendedClient<true> = interaction.client;
     switch (interaction.options.getSubcommandGroup()) {
       case "poker": {
         await interaction.deferReply();

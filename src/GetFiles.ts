@@ -8,17 +8,20 @@ import type { Events } from "./events/base.js";
 import type { Interaction } from "./interactions/base.js";
 // Dos
 import type { DOSCommands } from './dos/commands/base';
+import { BaseManager } from "./managers/base.js";
 // Database
 
-async function getAllFiles<T>(path: string, array: T[] = []): Promise<Set<T>> {
-  const __dirname = fileURLToPath(new URL(".", import.meta.url));
+const __dirname = fileURLToPath(new URL(".", import.meta.url));
+
+async function getAllFiles<T, Path extends PropertyKey = "default">(path: string, array: Record<Path, T>[] = [], subdirs = NaN): Promise<Set<Record<Path, T>>> {
+  if (subdirs <= -1 && !isNaN(subdirs)) return new Set(array);
 
   const filesDir: string[] = await readdir(`${__dirname}/${path}`);
   const folders: string[] = []
 
   for (const e of filesDir) {
     if (e === "base.js") continue;
-    const fileData: T = await import(`${__dirname}/${path}/${e}`).catch(async (err: NodeJS.ErrnoException /*TS Error interface doesn't implement err.code.*/) => {
+    const fileData: Record<Path, T> = await import(`${__dirname}/${path}/${e}`).catch(async (err: NodeJS.ErrnoException /*TS Error interface doesn't implement err.code.*/) => {
       switch (err.code) {
         case "ERR_UNSUPPORTED_DIR_IMPORT": {
           break;
@@ -32,16 +35,16 @@ async function getAllFiles<T>(path: string, array: T[] = []): Promise<Set<T>> {
   }
 
   for (const e of folders) {
-    array = Array.from(await getAllFiles(e, array));
+    array = Array.from(await getAllFiles(e, array, subdirs-1));
   }
 
   return new Set(array);
 }
 
 export async function getAllInteractions(log = false) {
-  const commandsInteractions = await getAllFiles<Record<"default", Interaction>>("interactions/Commands");
+  const commandsInteractions = await getAllFiles<Interaction>("interactions/Commands");
   const CollectionCommands = new Collection<string, Interaction>();
-  const contextInteractions = await getAllFiles<Record<"default", Interaction>>("interactions/ContextMenu")
+  const contextInteractions = await getAllFiles<Interaction>("interactions/ContextMenu")
   const CollectionContext = new Collection<string, Interaction>();
 
   for (const { default: command } of commandsInteractions) {
@@ -58,7 +61,7 @@ export async function getAllInteractions(log = false) {
 }
 
 export async function getAllEvents(client: ExtendedClient, log = false) {
-  const events = await getAllFiles<Record<"default", Events>>("events");
+  const events = await getAllFiles<Events>("events");
 
   for (const {default: event} of events) {
     if (event.once) client.once(event.name, event.execute.bind(event));
@@ -68,7 +71,7 @@ export async function getAllEvents(client: ExtendedClient, log = false) {
 }
 
 export async function getAllDOSCommands() {
-  const DosCommands = await getAllFiles<Record<"default", DOSCommands>>("dos/commands");
+  const DosCommands = await getAllFiles<DOSCommands>("dos/commands");
   const CollectionDosCommands = new Collection<string, DOSCommands>()
 
   for (const {default: DosCommand} of DosCommands) {
@@ -82,4 +85,14 @@ export async function getAllDOSCommands() {
   }
 
   return CollectionDosCommands
+}
+
+export async function getAllManagers(client: ExtendedClient, log = false) {
+  const managers = await getAllFiles<BaseManager>("managers", [], 1);
+  client.managers = {};
+
+  for (const {default: manager} of managers) {
+    manager.init(client);
+    if (log) console.log(`Loaded manager ${manager.name}`)
+  }
 }

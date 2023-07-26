@@ -4,7 +4,7 @@ import { readdir } from "node:fs/promises";
 import { ExtendedClient } from "../../Client.js";
 import { BaseManager } from "../base.js";
 
-class DatabaseManager extends BaseManager {
+export default new class DatabaseManager extends BaseManager {
   public name = "database";
   public async init(client: ExtendedClient) {
     const __dirname = (await import("node:url")).fileURLToPath(new URL(".", import.meta.url));
@@ -28,5 +28,3 @@ class DatabaseManager extends BaseManager {
     client.db = tables;
   }
 }
-
-export default new DatabaseManager();

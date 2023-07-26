@@ -21,3 +21,13 @@ export const ownersIds = ["Insert user Ids here as", "in", "this way"]
 export const keys = {
   pastee: "A key to automatically upload to https://paste.ee (used only in the get command)",
 }
+
+export const starboard = {
+  enable: false,
+}
+
+export const socials = {
+  mastodon: {
+    enable: false
+  }
+}

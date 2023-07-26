@@ -1,26 +1,67 @@
-import { ChatInputCommandInteraction, BaseInteraction } from "discord.js";
+import { ChatInputCommandInteraction, BaseInteraction, ContextMenuCommandInteraction, ModalSubmitInteraction, CategoryChannel, PartialGroupDMChannel, Events as Event, codeBlock } from "discord.js";
 import { ExtendedClient } from "../../Client";
 import { Events } from "../base.js";
 
-class InteractionCreate extends Events {
-  public name = "interactionCreate";
+export default new class InteractionCreate extends Events {
+  public name = Event.InteractionCreate;
   public once = false;
 
-  async execute(interaction: BaseInteraction): Promise<void> {
-    if (interaction instanceof ChatInputCommandInteraction) {
-      await this.checkCommand(interaction);
-    }
+  async execute(interaction: BaseInteraction): Promise<any> {
+    if (interaction instanceof ChatInputCommandInteraction) return await this.getCommand(interaction);
+    else if (interaction instanceof ContextMenuCommandInteraction) return await this.getContext(interaction);
+    else if (interaction instanceof ModalSubmitInteraction) return await this.getModal(interaction);
   }
   
-  async checkCommand(interaction: ChatInputCommandInteraction) {
+  async getCommand(interaction: ChatInputCommandInteraction): Promise<void> {
     const client: ExtendedClient = interaction.client;
-    if (client.interactions == undefined) return;
+    if (!client.interactions) return;
 
     const command = client.interactions.get("commands")?.get(interaction.commandName);
-    if (command == undefined) return;
+    if (!command) return;
 
-    await command.execute(interaction);
+    await command.execute(interaction).catch(e => {
+      console.error(e);
+      if (interaction.deferred) interaction.followUp(e);
+      else interaction.reply(`An error ocurred while running this command: ${codeBlock(e)}`);
+    });
+  }
+
+  async getContext(interaction: ContextMenuCommandInteraction): Promise<void> {
+    const client: ExtendedClient = interaction.client;
+    if (!client.interactions) return;
+
+    const context = client.interactions.get("context")?.get(interaction.commandName);
+    if (!context) return; 
+
+    await context.execute(interaction).catch(e => {
+      console.error(e);
+      if (interaction.deferred) interaction.followUp(e);
+      else interaction.reply(`An error ocurred while running this context menu: ${codeBlock(e)}`);
+    });
+  }
+
+  async getModal(interaction: ModalSubmitInteraction) {
+    const client: ExtendedClient = interaction.client;
+    const customId = interaction.customId;
+
+    if (customId.startsWith("emes-")) {
+      const Ids = customId.split("-");
+      const channel = await client.channels.fetch(Ids[1])
+      if (!channel) return interaction.reply("Couldn't fetch the channel");
+      if (channel instanceof CategoryChannel || channel instanceof PartialGroupDMChannel) return null;
+      
+      const message = await channel.messages.fetch(Ids[2]);
+      message.edit(interaction.fields.getTextInputValue("new-message"))
+      return interaction.reply({content: "Done", ephemeral: true});
+    }
+
+    switch (customId) {
+      case "": {
+        break;
+      }
+      default: {
+        break;
+      }
+    }
   }
 }
-
-export default new InteractionCreate();

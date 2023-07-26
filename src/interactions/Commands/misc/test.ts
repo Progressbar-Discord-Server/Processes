@@ -27,7 +27,7 @@ class Test extends Interaction {
   async execute(interaction: ChatInputCommandInteraction) {
     switch (interaction.options.getSubcommand()) {
       case "simple": {
-        interaction.reply({ content: interaction.options.getString("content") || "", ephemeral: interaction.options.getBoolean("ephemeral") || true })
+        interaction.reply({ content: interaction.options.getString("content") || "", ephemeral: interaction.options.getBoolean("ephemeral") || false })
         break
       }
     }

@@ -1,21 +1,15 @@
-import { NUMBER, TEXT, STRING, Sequelize } from "sequelize";
+import { TEXT, STRING, Sequelize } from "sequelize";
 
 export const name = "cases";
 
 export function init(database: Sequelize) {
   return database.define('cases', {
-    userID: {
-      type: NUMBER,
-    },
+    userID: TEXT,
     reason: {
       type: TEXT,
       defaultValue: "No reason provided",
     },
-    Executor: {
-      type: NUMBER,
-    },
-    type: {
-      type: STRING,
-    }
+    Executor: TEXT,
+    type: STRING
   });
 }
