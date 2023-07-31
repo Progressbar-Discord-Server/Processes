@@ -6,10 +6,13 @@ const client: ExtendedClient = new Client({
   intents: [
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.Guilds
+    GatewayIntentBits.Guilds,
   ],
   partials: [
-    Partials.Message
+    Partials.Channel,
+    Partials.Message,
+    Partials.Reaction,
+    Partials.User,
   ]
 })
 
