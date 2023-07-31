@@ -21,6 +21,7 @@ async function getAllFiles<T, Path extends PropertyKey = "default">(path: string
 
   for (const e of filesDir) {
     if (e === "base.js") continue;
+    
     const fileData: Record<Path, T> = await import(`${__dirname}/${path}/${e}`).catch(async (err: NodeJS.ErrnoException /*TS Error interface doesn't implement err.code.*/) => {
       switch (err.code) {
         case "ERR_UNSUPPORTED_DIR_IMPORT": {
