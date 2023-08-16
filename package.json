@@ -14,7 +14,7 @@
     "discord"
   ],
   "author": "5jiji",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.4.0",
     "discord.js": "^14.8.0",
