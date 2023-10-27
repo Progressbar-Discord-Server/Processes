@@ -39,7 +39,7 @@ export interface BaseConfig {
     }
   },
 
-  start: (client: ExtendedClient) => any;
+  start?: (client: ExtendedClient) => any;
 
   jailRole: RoleResolvable,
 }
