@@ -5,7 +5,7 @@ import { CategoryChannel } from "discord.js";
 
 class Tail extends DOSCommands {
   public name = "tail";
-  public execute = async (config: Config, client: ExtendedClient, args: string[]) => {
+  async execute(config: Config, client: ExtendedClient, args: string[]) {
     if (config.drives.current === "C" || config.drives.S.current == null) {
       console.log("Please, enter a server in the 'S' drive");
       return;
@@ -25,7 +25,7 @@ class Tail extends DOSCommands {
 
     const MessageAmount = parseInt(args[2]) || 10
     for (const [, e] of await server.messages.fetch({ limit: MessageAmount })) {
-      console.log(`${e.id.padEnd(20)}${e.author.tag.padEnd(13)}${e.content}`)
+      console.log(`${e.id.padEnd(20)}${(e.author.discriminator !== "#0" ? e.author.username : `${e.author.username}#${e.author.discriminator}`).padEnd(13)}${e.content}`)
     }
   }
 }

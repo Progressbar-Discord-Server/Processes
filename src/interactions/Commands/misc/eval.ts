@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
-import { ownersIds } from "../../../config.js";
 import { Interaction } from "../../base.js";
+import { ExtendedClient } from "../../../Client.js";
 
 class Eval extends Interaction {
   public data = new SlashCommandBuilder()
@@ -16,18 +16,18 @@ class Eval extends Interaction {
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply({ ephemeral: true })
     const code = interaction.options.getString("code", true)
-    
-    if (ownersIds instanceof Array) {
-      if (ownersIds.includes(interaction.user.id)) {
-        console.log(`Eval used by ${interaction.user.discriminator === "#0" ? interaction.user.username : interaction.user.username + "#" + interaction.user.discriminator} for ${code}`)
-        return eval(`await (async () => {${code}})().catch(err => {console.error(err)})`)
-      }
+    const client: ExtendedClient = interaction.client;
+
+    if (!client.config) return interaction.followUp("No configs found, pls add one.");
+
+    if (client.config.ownersIds instanceof Array) {
+      if (!client.config.ownersIds.includes(interaction.user.id)) return interaction.followUp("You aren't authorized to execute this")
       
-      return interaction.followUp("You aren't authorized to execute this")
+      console.log(`Eval used by ${interaction.user.discriminator === "#0" ? interaction.user.username : interaction.user.username + "#" + interaction.user.discriminator} for ${code}`)
+      return eval(`await (async () => {${code}})().catch(err => {console.error(err)})`)
     }
-    else {
-      return interaction.reply("Next time, use an array for ownerIds.")
-    }
+    
+    return interaction.reply("Next time, use an array for ownerIds, i can't understand if it's not a string of arrays...")
   }
 }
 

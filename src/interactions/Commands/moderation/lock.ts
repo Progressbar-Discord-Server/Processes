@@ -1,10 +1,11 @@
-import { SlashCommandBuilder, EmbedBuilder, ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, ChannelType, ChatInputCommandInteraction } from 'discord.js';
 import { Interaction } from '../../base.js';
 
 class Lock extends Interaction {
   public data = new SlashCommandBuilder()
     .setName('lock')
     .setDescription("Lock a channel")
+    .setDMPermission(false)
     .addChannelOption(o => o
       .setName("channel")
       .setDescription("The channel to lock")
@@ -22,15 +23,11 @@ class Lock extends Interaction {
   public beta = false;
   public enable = true;
   async execute(interaction: ChatInputCommandInteraction) {
-    let channel = interaction.options.getChannel("channel", true);
+    if (!interaction.inGuild()) return interaction.followUp("This command cannot be run in DMs.")
+    await interaction.deferReply();
+    const channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]);
     const reason = interaction.options.getString("reason") || "No reason provided";
     const role = interaction.options.getRole('role', true)
-
-    if (channel.type !== ChannelType.GuildText) return interaction.reply("You can use this command only with text channels");
-
-    if (!(channel instanceof TextChannel)) {
-      channel = <TextChannel> await interaction.guild?.channels.fetch(channel.id);
-    }
 
     channel.permissionOverwrites.edit(role.id, {
       SendMessages: false,
@@ -43,7 +40,7 @@ class Lock extends Interaction {
       .setColor("#00FF00")
       .setDescription("Channel locked");
     
-    interaction.reply({ embeds: [replyEmbed] });
+    interaction.followUp({ embeds: [replyEmbed] });
   }
 }
 

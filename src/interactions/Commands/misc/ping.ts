@@ -14,7 +14,7 @@ class Ping extends Interaction {
     const replyEmbed = {
       color: Math.floor(Math.random() * 16777215),
       title: "Pong!",
-      description: `Latency of the bot:${Date.now() - interaction.createdTimestamp}ms`
+      description: `Latency: ${interaction.createdTimestamp - Date.now()}ms`
     }
     await interaction.reply({embeds: [replyEmbed], ephemeral: true})
 

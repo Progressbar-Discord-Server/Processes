@@ -9,7 +9,8 @@ export default new class DatabaseManager extends BaseManager {
   public async init(client: ExtendedClient) {
     const __dirname = (await import("node:url")).fileURLToPath(new URL(".", import.meta.url));
 
-    const conf = (await import("../../config.js")).sequelize
+    if (!client.config) return;
+    const conf = client.config.sequelize;
 
     const database = new Sequelize.Sequelize(conf.database, conf.username, conf.password, {
       host: 'localhost',

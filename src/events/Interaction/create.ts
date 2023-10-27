@@ -1,15 +1,15 @@
-import { ChatInputCommandInteraction, BaseInteraction, ContextMenuCommandInteraction, ModalSubmitInteraction, CategoryChannel, PartialGroupDMChannel, Events as Event, codeBlock } from "discord.js";
+import { ChatInputCommandInteraction, ContextMenuCommandInteraction, ModalSubmitInteraction, CategoryChannel, PartialGroupDMChannel, codeBlock, Interaction } from "discord.js";
 import { ExtendedClient } from "../../Client";
 import { Events } from "../base.js";
 
 export default new class InteractionCreate extends Events {
-  public name = Event.InteractionCreate;
+  public name = "interactionCreate" as const;
   public once = false;
 
-  async execute(interaction: BaseInteraction): Promise<any> {
+  async execute(interaction: Interaction): Promise<any> {
     if (interaction instanceof ChatInputCommandInteraction) return await this.getCommand(interaction);
-    else if (interaction instanceof ContextMenuCommandInteraction) return await this.getContext(interaction);
-    else if (interaction instanceof ModalSubmitInteraction) return await this.getModal(interaction);
+    if (interaction instanceof ContextMenuCommandInteraction) return await this.getContext(interaction);
+    if (interaction instanceof ModalSubmitInteraction) return await this.getModal(interaction);
   }
   
   async getCommand(interaction: ChatInputCommandInteraction): Promise<void> {
@@ -21,7 +21,7 @@ export default new class InteractionCreate extends Events {
 
     await command.execute(interaction).catch(e => {
       console.error(e);
-      if (interaction.deferred) interaction.followUp(e);
+      if (interaction.deferred) interaction.followUp(`An error ocurred while running this command: ${codeBlock(e)}`);
       else interaction.reply(`An error ocurred while running this command: ${codeBlock(e)}`);
     });
   }

@@ -1,10 +1,11 @@
-import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, ChannelType, TextChannel } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, ChannelType } from 'discord.js';
 import { Interaction } from '../../base.js';
 
 class Unlock extends Interaction {
   public data = new SlashCommandBuilder()
     .setName('unlock')
     .setDescription("Unlock a channel")
+    .setDMPermission(false)
     .addChannelOption(o => o
       .setName("channel")
       .setDescription("The channel to lock")
@@ -23,16 +24,13 @@ class Unlock extends Interaction {
   public enable = true;
 
   async execute(interaction: ChatInputCommandInteraction) {
-    let channel = interaction.options.getChannel("channel", true);
+    if (!interaction.inGuild()) return;
+
+    await interaction.deferReply()
+    const channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]);
     const reason = interaction.options.getString("reason") || "No reason provided";
     const role = interaction.options.getRole('role', true);
-    
-    if (channel.type !== ChannelType.GuildText) return interaction.reply("You can use this command only with text channels");
-    
-    if (!(channel instanceof TextChannel)) {
-      channel = <TextChannel> await interaction.guild?.channels.fetch(channel.id);
-    }
-    
+        
     channel.permissionOverwrites.edit(role.id, {
       SendMessages: true,
       SendMessagesInThreads: true,
@@ -40,11 +38,10 @@ class Unlock extends Interaction {
       CreatePrivateThreads: true,
     }, { reason: reason, type: 0 })
     
-    
     const replyEmbed = new EmbedBuilder()
       .setDescription("Channel unlocked")
       .setColor("#00FF00");
-    interaction.reply({ embeds: [replyEmbed] });
+    interaction.followUp({ embeds: [replyEmbed] });
   }
 }
 

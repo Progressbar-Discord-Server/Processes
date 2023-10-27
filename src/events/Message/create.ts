@@ -1,8 +1,8 @@
 import { Events } from "../base.js";
-import { Events as Event, Message } from "discord.js";
+import { Message } from "discord.js";
 
 export default new class MessageCreate extends Events {
-  public name = Event.MessageCreate;
+  public name = "messageCreate" as const;
   public once = false;
 
   public execute(message: Message) {

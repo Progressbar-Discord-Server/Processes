@@ -1,7 +1,7 @@
-import { ChatInputCommandInteraction, Message, SlashCommandBuilder, codeBlock } from 'discord.js';
-import { keys } from '../../../config.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { Interaction } from '../../base.js';
 import axios from 'axios';
+import { ExtendedClient } from '../../../Client';
 
 class Get extends Interaction {
   public data = new SlashCommandBuilder()
@@ -84,11 +84,16 @@ class Get extends Interaction {
   public beta = false;
   public enable = true;
 
-  async execute(interaction: ChatInputCommandInteraction) {
-    if (!interaction.inGuild()) return interaction.reply("You can't use this command in DMs. (How did you even run it throgh DMs in the first place?)");
+  async execute(this: Get, interaction: ChatInputCommandInteraction) {
+    const client: ExtendedClient = interaction.client;
+
+    if (!interaction.inGuild()) return interaction.reply("You can't use this command in DMs. (How did you even run it through DMs in the first place?)");
     await interaction.deferReply({ ephemeral: true });
 
     const guild = await interaction.client.guilds.fetch(interaction.guildId);
+
+    const pasteeKey = client.config?.pastee.key;
+    if (!pasteeKey) return interaction.followUp("There is no config available :/\nCan't get the pastee api key.");
 
     const sc = interaction.options.getSubcommand(true)
 
@@ -104,7 +109,7 @@ class Get extends Interaction {
             });
 
             if (ArrName.length) {
-              await this.sendAsPaste(ArrName.join("\n"), interaction)
+              await this.sendAsPaste(ArrName.join("\n"), interaction, pasteeKey)
             }
             else if (!ArrName.length) interaction.followUp("Why does not even a single role exist?");
             break
@@ -117,7 +122,7 @@ class Get extends Interaction {
             if (name === null) name = true;
             const ArrayURL: string[] = [];
             
-            if (!this.checksize(size) || !this.checkFormat(extension)) {
+            if (!this.checkSize(size) || !this.checkFormat(extension)) {
               return interaction.followUp({content: "Somehow, size & format aren't correct...", ephemeral: true});
             }
 
@@ -129,8 +134,8 @@ class Get extends Interaction {
             }
 
             if (ArrayURL.length) {
-              if (name) this.sendAsPaste(ArrayURL.join("\n"), interaction)
-              else if (!name) this.sendAsPaste(ArrayURL.join(""), interaction)
+              if (name) this.sendAsPaste(ArrayURL.join("\n"), interaction, pasteeKey)
+              else if (!name) this.sendAsPaste(ArrayURL.join(""), interaction, pasteeKey)
             }
             else if (!ArrayURL.length) interaction.followUp("No role found with an icon");
             break
@@ -147,7 +152,7 @@ class Get extends Interaction {
               if (hex && color !== '#000000' || !hex && color !== 0) ArrColor.push(`${color} for ${e.name}`);
             });
 
-            if (ArrColor.length) this.sendAsPaste(ArrColor.join("\n"), interaction);
+            if (ArrColor.length) this.sendAsPaste(ArrColor.join("\n"), interaction, pasteeKey);
             else if (!ArrColor.length) interaction.followUp("No role found to have color");
             break
           }
@@ -157,20 +162,21 @@ class Get extends Interaction {
       case "guild": {
         switch (sc) {
           case "description": {
-            return interaction.followUp(`The description of this server is \`${guild.description}\``)
+            if (guild.description) return interaction.followUp(`The description of this server is \`${guild.description}\``)
+            
+            return interaction.followUp("This server doesn't have a description.");
           }
           case "name": {
             return interaction.followUp(`The name of this server is \`${guild.name}\``)
           }
           case "features": {
             const invite = interaction.options.getString("invite");
-            if (!invite) return interaction.followUp({ content: `${guild.name} has ${guild.features.length} features: \n${codeBlock(guild.features.join("\n"))}` })
+            if (!invite) return interaction.followUp({ content: `${guild.name} has ${guild.features.length} features: \n\`\`\`${guild.features.join("\n")}\`\`\`` })
 
-            const inviteData = await interaction.client.fetchInvite(invite).catch(err => interaction.followUp(`There was an error while executing this command!\n\`\`\`${err} \`\`\``))
-            if (inviteData instanceof Message) return;
+            const inviteData = await interaction.client.fetchInvite(invite);
 
             if (!inviteData.guild) return interaction.followUp("How do i not have access to the guild");
-            interaction.followUp({ content: `${inviteData.guild.name} has ${inviteData.guild.features.length} features: \n${codeBlock(inviteData.guild.features.join("\n"))}` })
+            interaction.followUp({ content: `${inviteData.guild.name} has ${inviteData.guild.features.length} features: \n\`\`\`${inviteData.guild.features.join("\n")}\`\`\`` })
           }
         }
         break
@@ -180,8 +186,7 @@ class Get extends Interaction {
           case "emojis": {
             await guild.fetch();
             const emojis = await guild.emojis.fetch();
-            let name = interaction.options.getBoolean('name');
-            if (name === null) name = true;
+            const name = interaction.options.getBoolean('name') ?? true;
             const emojiArr: string[] = [];
 
             emojis.forEach(e => {
@@ -190,16 +195,15 @@ class Get extends Interaction {
             });
 
             if (emojiArr.length) {
-              if (name) await this.sendAsPaste(emojiArr.join("\n"), interaction);
-              else if (!name) await this.sendAsPaste(emojiArr.join(' '), interaction);
+              if (name) await this.sendAsPaste(emojiArr.join("\n"), interaction, pasteeKey);
+              else if (!name) await this.sendAsPaste(emojiArr.join(' '), interaction, pasteeKey);
             }
             else if (!emojiArr.length) interaction.followUp({ content: "No emoji found" })
             break
           }
           case "stickers": {
             const stickers = await guild.stickers.fetch();
-            let name = interaction.options.getBoolean('name');
-            if (name === null) name = true;
+            const name = interaction.options.getBoolean('name') ?? true;
             const stickersArr: string[] = [];
 
             stickers.forEach(e => {
@@ -209,8 +213,8 @@ class Get extends Interaction {
 
 
             if (stickersArr.length) {
-              if (name) this.sendAsPaste(stickersArr.join("\n"), interaction);
-              else if (!name) this.sendAsPaste(stickersArr.join(' '), interaction)
+              if (name) this.sendAsPaste(stickersArr.join("\n"), interaction, pasteeKey);
+              else if (!name) this.sendAsPaste(stickersArr.join(' '), interaction, pasteeKey)
             }
             else if (!stickersArr.length) interaction.followUp("No stickers found");
             break
@@ -221,9 +225,9 @@ class Get extends Interaction {
     }
   }
 
-  async sendAsPaste(data: string, interaction: ChatInputCommandInteraction) {
+  async sendAsPaste(data: string, interaction: ChatInputCommandInteraction, key: string) {
     axios.post("https://api.paste.ee/v1/pastes", {
-      key: keys.pastee,
+      key: key,
       sections: [
         { name: "Processes Data", contents: data }
       ]
@@ -242,7 +246,7 @@ class Get extends Interaction {
       });
   }
 
-  checksize(size: number): size is 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096 {
+  checkSize(size: number): size is 16 | 32 | 64 | 128 | 256 | 512 | 1024 | 2048 | 4096 {
     switch (size) {
       case 16:   case 32:   case 64:
       case 128:  case 256:  case 512:
@@ -253,7 +257,7 @@ class Get extends Interaction {
   }
 
   checkFormat(format: string): format is "webp" | "png" | "jpg" | "jpeg" | "gif" {
-    switch (format) {
+    switch (format.toLowerCase()) {
       case "webp": case "png":
       case "jpg": case "jpeg":
       case "gif":

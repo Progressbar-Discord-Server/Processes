@@ -1,10 +1,11 @@
-import { SlashCommandBuilder, GuildMember, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
+import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
 import { Interaction } from "../../base.js";
 
 class Info extends Interaction {
   public data = new SlashCommandBuilder()
     .setName("info")
     .setDescription("Get information about something")
+    .setDMPermission(false)
     .addSubcommand(sc => sc
       .setName("server")
       .setDescription("Get Information about the server"))
@@ -29,43 +30,39 @@ class Info extends Interaction {
 
     switch (interaction.options.getSubcommand(true)) {
       case "user": {
-        let member = interaction.options.getMember("user");
-
-        if (!member) return interaction.followUp("Couldn't obtain information about the give user.")
-
-        if (!(member instanceof GuildMember)) {
-          console.log(member)
-          // @ts-expect-error
-          member = await guild.members.fetch({user: member});
-        }
+        const user = interaction.options.getUser("user", true);
+        const member = await guild.members.fetch({user: user.id});
 
         const roles: string[] = []
         member.roles.cache.forEach(e => {
           if (e.name !== "@everyone") roles.push(`<@&${e.id}>`)
         })
 
-        const avatar = member.user.avatarURL({ extension: "png", size: 4096 })
+        const avatar = user.avatarURL({ extension: "png", size: 512 }) ?? undefined;
 
-        interaction.followUp({
+        return interaction.followUp({
           embeds: [new EmbedBuilder()
-            .setAuthor({ name: member.user.tag, iconURL: (avatar ? avatar : undefined) })
-            .setDescription(`<@${member.user.id}>`)
+            .setAuthor({ name: user.discriminator !== "#0" ? user.username : `${user.username}#${user.discriminator}`, iconURL: avatar })
+            .setDescription(`<@${user.id}>`)
             .setColor(Math.floor(Math.random() * 16777215))
             .addFields(
               { name: "**Joined**", value: `<t:${Math.floor(member.joinedTimestamp || NaN / 1000)}:f> (<t:${Math.floor(member.joinedTimestamp || NaN / 1000)}:R>)`, inline: true },
-              { name: "**Registered**", value: `<t:${Math.floor(member.user.createdTimestamp / 1000)}:f> (<t:${Math.floor(member.user.createdTimestamp / 1000)}:R>)`, inline: true },
+              { name: "**Registered**", value: `<t:${Math.floor(user.createdTimestamp / 1000)}:f> (<t:${Math.floor(user.createdTimestamp / 1000)}:R>)`, inline: true },
               { name: `**Roles [${member.roles.cache.size - 1}]**`, value: roles.join(", ") ? roles.join(", ") : "*none*" },
             )
           ]
         });
-        break
       }
       case "server": {
         await guild.fetch()
 
-        const replyEmbed = new EmbedBuilder().setAuthor({ name: guild.name, iconURL: guild.iconURL({ extension: 'png', size: 4096 }) || undefined }).setColor(`#${Math.floor(Math.random() * 16777215).toString(16)}`).setFooter({ text: `Id: ${guild.id}` }).setTimestamp(guild.createdAt)
+        const replyEmbed = new EmbedBuilder()
+          .setAuthor({ name: guild.name, iconURL: guild.iconURL({ extension: 'png', size: 512 }) ?? undefined })
+          .setColor(Math.floor(Math.random() * 16777215))
+          .setFooter({ text: `Id: ${guild.id}` })
+          .setTimestamp(guild.createdAt)
 
-        const owner = await guild.fetchOwner()
+        const ownerUser = (await guild.fetchOwner()).user
 
         let roleCount = 0
         await guild.roles.fetch().then(e => {
@@ -90,7 +87,7 @@ class Info extends Interaction {
         })
 
         replyEmbed.setFields(
-          { name: "Owner", value: `${owner.user.tag}`, inline: true },
+          { name: "Owner", value: `${ownerUser.discriminator !== "#0" ? ownerUser.username : `${ownerUser.username}#${ownerUser.discriminator}`}`, inline: true },
           { name: "Roles", value: `${roleCount}`, inline: true },
           { name: "Members", value: `${guild.memberCount}`, inline: true },
           { name: "Emojis", value: `${emojiCount}`, inline: true },

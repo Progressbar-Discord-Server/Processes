@@ -1,3 +1,6 @@
+import { RoleResolvable } from "discord.js";
+import { ExtendedClient } from "./Client";
+
 export interface BaseConfig {
   bot: {
     token: string,
@@ -22,19 +25,33 @@ export interface BaseConfig {
 
   thingboard: {
     enable: boolean,
-    emoji: ThingBoardEmojiObject[]
+    emoji: ThingBoardEmoji[]
   },
 
   socials: {
-    mastodon: {
-      enable: boolean
+    enable: boolean;
+    emojis: EmojiObject[];
+    socials: {
+      [key: string]: {
+        enable: boolean;
+        config?: ImplementationConfig;
+      } | undefined;
     }
   },
+
+  start: (client: ExtendedClient) => any;
+
+  jailRole: RoleResolvable,
 }
 
-interface ThingBoardEmojiObject {
+export interface EmojiObject {
   emoji: string,
-  channelId: string,
-  serverId: string,
   number: number,
 }
+
+export interface ThingBoardEmoji extends EmojiObject {
+  channelId: string,
+  serverId: string,
+}
+
+export type ImplementationConfig = Record<string, unknown> | undefined;

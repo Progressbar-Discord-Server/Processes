@@ -1,7 +1,7 @@
 import type { ExtendedClient } from "./Client.js";
 import { Collection } from "discord.js";
 import { readdir } from "fs/promises";
-import { URL, fileURLToPath } from "url";
+import { URL, fileURLToPath } from "node:url";
 // Events
 import type { Events } from "./events/base.js";
 // Interactions
@@ -49,8 +49,8 @@ export async function getAllInteractions(log = false) {
   const CollectionContext = new Collection<string, Interaction>();
 
   for (const { default: command } of commandsInteractions) {
-    if (command.data.name) CollectionCommands.set(command.data.name, command);
-    if (log) console.log(`Initiated Command "${command.data.name}"`)
+    if (command?.data?.name) CollectionCommands.set(command.data.name, command);
+    if (log && command?.data?.name) console.log(`Initiated Command "${command.data.name}"`)
   }
 
   for (const { default: context } of contextInteractions) {
@@ -93,7 +93,8 @@ export async function getAllManagers(client: ExtendedClient, log = false) {
   client.managers = {};
 
   for (const {default: manager} of managers) {
-    manager.init(client);
-    if (log) console.log(`Loaded manager ${manager.name}`)
+    if (!manager || !manager.init) continue;
+    if (log) console.log(`Loading manager ${manager.name}`)
+    await manager.init(client);
   }
 }

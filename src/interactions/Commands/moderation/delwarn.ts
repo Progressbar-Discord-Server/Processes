@@ -7,6 +7,7 @@ class Delogs extends Interaction{
     .setName('delogs')
     .setDescription("Delete a case")
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
+    .setDMPermission(false)
     .addNumberOption(o => o
       .setName("case")
       .setDescription("Which case need to be deleted?")

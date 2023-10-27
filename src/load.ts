@@ -1,10 +1,10 @@
 import { Channel } from "discord.js";
 import type { ExtendedClient } from "./Client.js";
 import { getAllInteractions, getAllEvents, getAllManagers } from "./GetFiles.js";
-import * as config from "./config.js";
 
 export async function load(client: ExtendedClient) {
-  client.config = config
+  client.config = await import("./config.js").catch() ?? await import("./exampleConfig.js");
+  client.config.bot.token = "";
 
   const map = new Map();
   const [commandsInteraction, contextInteraction] = await getAllInteractions(true);

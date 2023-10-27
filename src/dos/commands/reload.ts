@@ -20,8 +20,8 @@ class Reload extends DOSCommands {
         const map = new Map()
         map.set("commands", commands)
         map.set("context", context)
-
         client.interactions = map;
+        
         console.log("Reload finished.");
         break
       }

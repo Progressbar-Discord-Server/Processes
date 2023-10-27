@@ -8,6 +8,7 @@ import { getAllDOSCommands } from "../GetFiles.js";
 export async function ProcessDOS(client: ExtendedClient<true>) {
   const commands = await getAllDOSCommands();
   const cmd = createInterface(input, output);
+  
   let config: Config = {
     drives: {
       current: "S",
@@ -36,13 +37,12 @@ export async function ProcessDOS(client: ExtendedClient<true>) {
   cmd.on('line', async line => {
     const commandName = line.trim().split(" ")[0];
     if (commandName === "") return;
-    if (line.trim() === "eval commands") return console.log(commands)
     
     const command = commands.get(commandName);
     if (!command) return console.log("Bad command or file name")
 
-    const maybeConfig = await command.execute(config, client, line.trim().split(" ").slice(1)).catch(console.log)
-    if (maybeConfig) config = maybeConfig;
+    const newConfig = await command.execute(config, client, line.trim().split(" ").slice(1)).catch(console.error)
+    if (newConfig) config = newConfig;
 
     cmd.setPrompt(`${config.drives.current}:${config.drives.dir.join("")}>`)
     cmd.prompt();

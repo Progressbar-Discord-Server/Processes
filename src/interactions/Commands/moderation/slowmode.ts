@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, ChatInputCommandInteraction } from 'discord.js';
 import { Interaction } from '../../base.js';
 
 class Slowmode extends Interaction {
@@ -29,17 +29,11 @@ class Slowmode extends Interaction {
   public beta = false;
   public enable = true;
   async execute(interaction: ChatInputCommandInteraction) {
-    let channel = interaction.options.getChannel('channel', true);
+    const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
     const unit = interaction.options.getString('unit', true);
     const RealLen = interaction.options.getInteger('duration', true);
 
     if (!interaction.inGuild()) return interaction.reply("This command only works in a guild.");
-
-    if (channel.type !== ChannelType.GuildText) return interaction.reply("This command works only on text channels.");
-
-    if (!(channel instanceof TextChannel)) {
-      channel = <TextChannel> await interaction.guild?.channels.fetch(channel.id)
-    }
 
     const reason = interaction.options.getString('reason') || "No reason provided";
     const replyEmbed = new EmbedBuilder();
