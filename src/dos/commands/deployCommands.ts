@@ -14,7 +14,7 @@ class DeployCommands extends DOSCommands {
       e.forEach(e => {
         const betaStatus = e.beta ?? false;
         const enable = e.enable ?? true;
-        if (!pushBetaCommands && betaStatus && enable || enable && !betaStatus) all.push(e.data)
+        if ((enable && !betaStatus) || (enable && betaStatus && pushBetaCommands)) all.push(e.data)
       })
     });
 
