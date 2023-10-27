@@ -7,14 +7,14 @@ class DeployCommands extends DOSCommands {
   public name = "deploy";
   public execute = async (config: Config, client: ExtendedClient) => {
     if (!client.config) return;
-    const { bot: { beta: pushBetaCommands } } = client.config;
+    const pushBetaCommands = client.config.bot.beta;
 
     const all: RESTPostAPIApplicationCommandsJSONBody[] = []
     if (client.interactions) client.interactions.forEach(e => {
       e.forEach(e => {
-        const betaStatus = e.beta || false;
-        const enable = e.enable || true;
-        if (!pushBetaCommands && betaStatus && enable || enable && pushBetaCommands) all.push(e.data)
+        const betaStatus = e.beta ?? false;
+        const enable = e.enable ?? true;
+        if (!pushBetaCommands && betaStatus && enable || enable && !betaStatus) all.push(e.data)
       })
     });
 
