@@ -10,8 +10,6 @@ export class SocialsManager extends BaseManager {
 
   #socials: Social[] = [];
   public async init(this: SocialsManager, client: ExtendedClient) {
-    if (client.managers) client.managers.socials = this;
-
     const __dirname = fileURLToPath(new URL(".", import.meta.url));
     const files = await readdir(__dirname + "implementations");
 
@@ -34,7 +32,7 @@ export class SocialsManager extends BaseManager {
     const client: ExtendedClient = rec.client;
     const config = client.config?.socials.socials;
     if (!config) return;
-    if (!this.#checkReaction(rec)) return;
+    if (!this.#checkReaction(rec, user)) return;
 
     const db = client.db?.socials;
     if (db) {
@@ -47,10 +45,9 @@ export class SocialsManager extends BaseManager {
     }
   }
 
-  #checkReaction(reaction: MessageReaction): boolean {
+  #checkReaction(reaction: MessageReaction, author: User): boolean {
     const client: ExtendedClient = reaction.client;
     const config = client.config?.socials;
-    const author = reaction.message.author;
 
     if (!config) return false;
     const emojiConfig = config.emojis.find(value => value.emoji == reaction.emoji.name);

@@ -96,5 +96,6 @@ export async function getAllManagers(client: ExtendedClient, log = false) {
     if (!manager || !manager.init) continue;
     if (log) console.log(`Loading manager ${manager.name}`)
     await manager.init(client);
+    client.managers[manager.name] = manager;
   }
 }

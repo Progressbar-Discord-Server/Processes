@@ -9,8 +9,6 @@ export class ThingBoardManager extends BaseManager {
 
   #channel: Record<string, TextBasedChannel> = {};
   public async init(this: ThingBoardManager, client: ExtendedClient) {
-    if (client.managers) client.managers.thingboard = this;
-
     for (const e of client.config?.thingboard.emoji || []) {
       const channel = await (await client.guilds.fetch(e.serverId)).channels.fetch(e.channelId);
       if (channel?.isTextBased()) this.#channel[e.emoji] = channel;
@@ -27,7 +25,7 @@ export class ThingBoardManager extends BaseManager {
     for (const e of Object.values(this.#channel)) if (e.id === message.channelId) return;
 
     const config: Config | undefined = client.config?.thingboard;
-    const [emoji, count] = await this.#ReactionCountChecker(rec, config);
+    const [emoji, count] = await this.#ReactionCountChecker(rec, user, config);
     if (!emoji && !count) return;
 
     const DBMessageBotId = await this.#checkSent(client.db?.star, message.id, emoji);
@@ -47,9 +45,8 @@ export class ThingBoardManager extends BaseManager {
     this.#channel[emoji].messages.edit(messageBotId, {content: `${emoji} **${count}** | <#${message.channel.id}>`, embeds: embed, components: buttons})
   }
 
-  async #ReactionCountChecker(reaction: MessageReaction, config: Config | undefined): Promise<[false, false] | [string, number]> {
+  async #ReactionCountChecker(reaction: MessageReaction, author: User, config: Config | undefined): Promise<[false, false] | [string, number]> {
     if (!config?.enable) return [false, false];
-    const author = reaction.message.author;
 
     const emojiConfig = config.emoji.find(value => value.emoji == reaction?.emoji.name);
     if (!emojiConfig) return [false, false];
