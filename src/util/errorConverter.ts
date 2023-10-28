@@ -17,7 +17,7 @@ export function errorToEmbed(error: unknown, description: string): APIEmbed {
         inline: true
       }, {
         name: "From",
-        value: `${error.stack}`,
+        value: `${typeof error.stack === "string" ? error.stack.slice(0, 1024) : error.stack}`,
         inline: true
       }])
   }
