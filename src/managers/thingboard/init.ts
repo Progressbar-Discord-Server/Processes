@@ -24,9 +24,7 @@ export class ThingBoardManager extends BaseManager {
     const message = rec.message;
     if (!this.#underNumDays(message.createdTimestamp)) return;
     
-    for (const e of Object.values(this.#channel)) {
-      if (e.id === message.channelId) return;
-    }
+    for (const e of Object.values(this.#channel)) if (e.id === message.channelId) return;
 
     const config: Config | undefined = client.config?.thingboard;
     const [emoji, count] = await this.#ReactionCountChecker(rec, config);
@@ -57,10 +55,9 @@ export class ThingBoardManager extends BaseManager {
     if (!emojiConfig) return [false, false];
 
     let count = reaction.count || 0;
-    for (const [, e] of reaction.users.cache) {
-      if (e.bot || (author && author.id === e.id)) count--;
-    }
-    if (count > emojiConfig.number) return [false, false];
+    for (const [, e] of reaction.users.cache) if (e.bot || (author && author.id === e.id)) count--;
+    
+    if (count < emojiConfig.number) return [false, false];
 
     return [emojiConfig.emoji, count];
   }

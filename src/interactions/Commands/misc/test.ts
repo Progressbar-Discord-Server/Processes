@@ -22,12 +22,12 @@ class Test extends Interaction {
     .toJSON();
     
 
-  public beta = false;    
+  public beta = false;
   public enable = true;
   async execute(interaction: ChatInputCommandInteraction) {
     switch (interaction.options.getSubcommand()) {
       case "simple": {
-        interaction.reply({ content: interaction.options.getString("content") || "", ephemeral: interaction.options.getBoolean("ephemeral") || false })
+        interaction.reply({ content: interaction.options.getString("content") || "", ephemeral: interaction.options.getBoolean("ephemeral") || false, allowedMentions: {parse: []} })
         break
       }
     }
