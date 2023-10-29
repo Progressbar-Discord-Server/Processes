@@ -16,6 +16,7 @@ export class MessageManager extends BaseManager {
       const message: BaseMessage = (await import(__dirname  + "messages/" + filename)).default;
       if (!message || !message.enable) continue;
       this.#messages.push(message);
+      console.log(`Loaded message ${message.name}`)
     }
   }
 
