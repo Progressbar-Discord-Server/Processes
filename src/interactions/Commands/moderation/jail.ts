@@ -30,6 +30,9 @@ class Jail extends Interaction {
     const guild = await client.guilds.fetch(interaction.guildId);
 
     const member = await guild.members.fetch({ user: user.id, force: true });
+
+    if (typeof client.config?.jail.protectorRole === "string" && member.roles.cache.has(client.config.jail.protectorRole)) return interaction.followUp({content: `User has protected role <@&${client.config.jail.protectorRole}>`, allowedMentions: {parse: []}});
+
     const db = {
       cases: client.db?.cases,
       jailed: client.db?.jailed
@@ -40,11 +43,7 @@ class Jail extends Interaction {
     const avatar = user.avatarURL({ extension: "png", size: 4096 }) || undefined;
     const username = escapeMarkdown(user.discriminator !== "#0" ? user.username : `${user.username}#${user.discriminator}`);
     const execUsername = escapeMarkdown(interaction.user.discriminator !== "#0" ? interaction.user.username : `${interaction.user.username}#${interaction.user.discriminator}`);
-    /*
-    const dmEmbed = new EmbedBuilder()
-      .setColor("#f0ac47")
-      .setDescription(`**You have been jailed from ${guild.name} for**: ${reason}`);
-    */
+
     const replyEmbed = new EmbedBuilder()
       .setColor("#43b582")
       .setDescription(`**${username} (${user.id}) has been unjailed.**`);
@@ -58,7 +57,7 @@ class Jail extends Interaction {
         { name: "**Reason**", value: escapeMarkdown(reason), inline: true }
       );
 
-    const jailRole = client.config?.jailRole;
+    const jailRole = client.config?.jail.givenRole;
     if (!jailRole) return interaction.followUp("No jailed role found in the config.\n Did you put `export const jailRole = \"<role id>\"`?");
 
     let type: "Jail removed" | "Jail added" = "Jail removed";

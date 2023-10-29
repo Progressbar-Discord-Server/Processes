@@ -41,7 +41,10 @@ export interface BaseConfig {
 
   start?: (client: ExtendedClient) => any;
 
-  jailRole: RoleResolvable,
+  jail: {
+    givenRole: RoleResolvable;
+    protectorRole: RoleResolvable;
+  },
 }
 
 export interface EmojiObject {
