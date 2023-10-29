@@ -16,4 +16,5 @@ jobs:
         with:
           node-version: 18
       - run: npm ci
+      - run: cp src/exampleConfig.ts src/config.ts
       - run: tsc -b
