@@ -9,7 +9,7 @@ export class ThingBoardManager extends BaseManager {
 
   #channel: Record<string, TextBasedChannel> = {};
   public async init(this: ThingBoardManager, client: ExtendedClient) {
-    for (const e of client.config?.thingboard.emoji || []) {
+    for (const e of client.config?.thingboard.emoji ?? []) {
       const channel = await (await client.guilds.fetch(e.serverId)).channels.fetch(e.channelId);
       if (channel?.isTextBased()) this.#channel[e.emoji] = channel;
     }
@@ -65,9 +65,9 @@ export class ThingBoardManager extends BaseManager {
     const diffTime = Math.abs(now.getTime() - mesDate.getTime())
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
 
-    if (diffDays < 20) return true;
+    if (diffDays > 20) return false;
     
-    return false;
+    return true;
   }
 
   async #createEmbed(message: Message): Promise<EmbedBuilder[]> {
