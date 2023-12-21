@@ -26,8 +26,6 @@ class Info extends Interaction {
 
     const guild = await interaction.client.guilds.fetch(interaction.guildId);
 
-    await interaction.deferReply({ ephemeral: true })
-
     switch (interaction.options.getSubcommand(true)) {
       case "user": {
         const user = interaction.options.getUser("user", true);
