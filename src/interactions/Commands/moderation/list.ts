@@ -80,7 +80,7 @@ class List extends Interaction {
     let IdUser = interaction.user.id;
     const UserExecutor = interaction.user;
 
-    if ((await guild.members.fetch(UserExecutor)).permissions.has(PermissionFlagsBits.KickMembers, true)) IdUser = interaction.options.getUser("user")?.id ?? IdUser;
+    if ((await guild.members.fetch(UserExecutor)).permissions.has(PermissionFlagsBits.ModerateMembers, true)) IdUser = interaction.options.getUser("user")?.id ?? IdUser;
 
     const db = client.db?.cases
     if (!db) return interaction.followUp("Database not found.");
