@@ -42,7 +42,7 @@ async function getAllFiles<T, Path extends PropertyKey = "default">(path: string
   return new Set(array);
 }
 
-export async function getAllInteractions(log = false): Promise<[Collection<string, Interaction>, Collection<string, Interaction>, Collection<string, ModelInteraction>]> {
+export async function getAllInteractions(log = false): Promise<[Collection<string, Interaction>, Collection<string, Interaction>, {name: Collection<string, Interaction>, startWith: Collection<string, Interaction>}]> {
   const commandsInteractions = await getAllFiles<Interaction>("interactions/Commands");
   const CollectionCommands = new Collection<string, Interaction>();
 
@@ -50,8 +50,10 @@ export async function getAllInteractions(log = false): Promise<[Collection<strin
   const CollectionContext = new Collection<string, Interaction>();
 
   const modelInteractions = await getAllFiles<ModelInteraction>("interactions/Model");
-  const CollectionModel = new Collection<string, ModelInteraction>();
+  const CollectionModelName = new Collection<string, ModelInteraction>();
+  const CollectionModelStartsWith = new Collection<string, ModelInteraction>();
 
+  // Commands
   for (const { default: command } of commandsInteractions) {
     if (!command?.data?.name) continue;
     
@@ -59,6 +61,7 @@ export async function getAllInteractions(log = false): Promise<[Collection<strin
     if (log) console.log(`Initiated Command "${command.data.name}"`)
   }
 
+  // Context Menu
   for (const { default: context } of contextInteractions) {
     if (!context?.data?.name) continue;
     
@@ -66,14 +69,15 @@ export async function getAllInteractions(log = false): Promise<[Collection<strin
     if (log) console.log(`Initiated Context menu "${context.data.name}"`);
   }
 
+  // Model
   for (const { default: model } of modelInteractions) {
     if (!model?.name) continue;
 
-    CollectionModel.set(model.name, model);
+    CollectionModelName.set(model.name, model);
     if (log) console.log(`Initiated Model "${model.name}"`);
   }
 
-  return [CollectionCommands, CollectionContext, CollectionModel];
+  return [CollectionCommands, CollectionContext, {name: CollectionModelName, startWith: CollectionModelStartsWith}];
 }
 
 export async function getAllEvents(client: ExtendedClient, log = false) {

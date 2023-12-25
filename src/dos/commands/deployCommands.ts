@@ -10,12 +10,15 @@ class DeployCommands extends DOSCommands {
     const pushBetaCommands = client.config.bot.beta;
 
     const all: RESTPostAPIApplicationCommandsJSONBody[] = []
-    if (client.interactions) for (const [, interactions] of client.interactions) {
-      for (const [, interaction] of interactions) {
-        if (!interaction.data) return;
-        const betaStatus = interaction.beta ?? false;
-        const enable = interaction.enable ?? true;
-        if ((enable && !betaStatus) || (enable && betaStatus && pushBetaCommands)) all.push(interaction.data)
+    if (client.interactions) for (const map of Object.keys(client.interactions)) {
+      // @ts-expect-error
+      for (const [, interactions] of client.interactions[map]) {
+        for (const [, interaction] of interactions) {
+          if (!interaction.data) return;
+          const betaStatus = interaction.beta ?? false;
+          const enable = interaction.enable ?? true;
+          if ((enable && !betaStatus) || (enable && betaStatus && pushBetaCommands)) all.push(interaction.data)
+        }
       }
     }
 
@@ -28,9 +31,9 @@ class DeployCommands extends DOSCommands {
     const clientId = await rest.get(Routes.user()).then(e => {
       if (typeof e == "object" && e != null && "id" in e && typeof e.id === "string") return e.id;
     })
-  
+
     if (typeof clientId !== "string") throw new Error("The client id of the bot couldn't be obtained.");
-  
+
     console.log(`Started refreshing ${commands.length} interaction commands.`);
     await rest.put(Routes.applicationCommands(clientId), { body: commands }).catch(e => console.error(e));
     console.log(`Successfully reloaded ${commands.length} interaction commands.`);

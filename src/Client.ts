@@ -5,7 +5,7 @@ import { BaseManager } from "./managers/base.js";
 import { BaseConfig } from "./baseConfig.js";
 
 export type ExtendedClient<Ready extends boolean = boolean> = Client<Ready> & {
-  interactions?: Map<string, Collection<string, BaseInteraction>>;
+  interactions?: InteractionMaps;
   db?: Record<string, ModelStatic<Model<any, any>>>;
   config?: BaseConfig;
   logging?: {
@@ -13,4 +13,13 @@ export type ExtendedClient<Ready extends boolean = boolean> = Client<Ready> & {
     moderation?: TextChannel;
   };
   managers?: Record<string, BaseManager>;
+}
+
+interface InteractionMaps {
+  commands: Collection<string, BaseInteraction>;
+  context: Collection<string, BaseInteraction>;
+  modal: {
+    name: Collection<string, BaseInteraction<true>>;
+    startWith: Collection<string, BaseInteraction<false>>;
+  };
 }

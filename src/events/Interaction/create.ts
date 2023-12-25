@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, ContextMenuCommandInteraction, ModalSubmitInteraction, CategoryChannel, PartialGroupDMChannel, codeBlock, Interaction } from "discord.js";
+import { ChatInputCommandInteraction, ContextMenuCommandInteraction, ModalSubmitInteraction, codeBlock, Interaction } from "discord.js";
 import { ExtendedClient } from "../../Client";
 import { Events } from "../base.js";
 
@@ -16,13 +16,13 @@ export default new class InteractionCreate extends Events {
     const client: ExtendedClient = interaction.client;
     if (!client.interactions) return;
 
-    const command = client.interactions.get("commands")?.get(interaction.commandName);
+    const command = client.interactions.commands.get(interaction.commandName);
     if (!command) return;
 
     await command.execute(interaction).catch(e => {
       console.error(e);
-      if (interaction.deferred) interaction.followUp(`An error ocurred while running this command: ${codeBlock(e)}`);
-      else interaction.reply(`An error ocurred while running this command: ${codeBlock(e)}`);
+      if (interaction.deferred) return interaction.followUp(`An error ocurred while running this command: ${codeBlock(e)}`);
+      interaction.reply(`An error ocurred while running this command: ${codeBlock(e)}`);
     });
   }
 
@@ -30,38 +30,27 @@ export default new class InteractionCreate extends Events {
     const client: ExtendedClient = interaction.client;
     if (!client.interactions) return;
 
-    const context = client.interactions.get("context")?.get(interaction.commandName);
+    const context = client.interactions.context.get(interaction.commandName);
     if (!context) return; 
 
     await context.execute(interaction).catch(e => {
       console.error(e);
-      if (interaction.deferred) interaction.followUp(e);
+      if (interaction.deferred) interaction.followUp(`An error ocurred while running this context menu: ${codeBlock(e)}`);
       else interaction.reply(`An error ocurred while running this context menu: ${codeBlock(e)}`);
     });
   }
 
   async getModal(interaction: ModalSubmitInteraction) {
     const client: ExtendedClient = interaction.client;
-    const customId = interaction.customId;
+    if (!client.interactions) return;
 
-    if (customId.startsWith("emes-")) {
-      const Ids = customId.split("-");
-      const channel = await client.channels.fetch(Ids[1])
-      if (!channel) return interaction.reply("Couldn't fetch the channel");
-      if (channel instanceof CategoryChannel || channel instanceof PartialGroupDMChannel) return null;
-      
-      const message = await channel.messages.fetch(Ids[2]);
-      message.edit(interaction.fields.getTextInputValue("new-message"))
-      return interaction.reply({content: "Done", ephemeral: true});
-    }
+    let modal = client.interactions.modal.name.get(interaction.customId) || client.interactions.modal.startWith.get(interaction.customId);
+    if (!modal) return;
 
-    switch (customId) {
-      case "": {
-        break;
-      }
-      default: {
-        break;
-      }
-    }
+    await modal.execute(interaction).catch(e => {
+      console.error(e);
+      if (interaction.deferred) interaction.followUp(`An error ocurred while running this modal: ${codeBlock(e)}`);
+      else interaction.reply(`An error ocurred while running this modal: ${codeBlock(e)}`);
+    });
   }
 }

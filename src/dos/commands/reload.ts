@@ -16,11 +16,12 @@ class Reload extends DOSCommands {
       case "C": {
         const { getAllInteractions } = await import('../../GetFiles.js');
         console.log("Reloading commands, Please wait...");
-        const [commands, context] = await getAllInteractions();
-        const map = new Map()
-        map.set("commands", commands)
-        map.set("context", context)
-        client.interactions = map;
+        const [commands, context, modal] = await getAllInteractions();
+        client.interactions = {
+          commands,
+          context,
+          modal
+        };
         
         console.log("Reload finished.");
         break
