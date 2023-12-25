@@ -20,9 +20,8 @@ class Test extends Interaction {
           .setDescription("Is the message hidden from eveyone?")
           .setRequired(true))))
     .toJSON();
-    
 
-  public beta = false;
+  public beta = true;
   public enable = true;
   async execute(interaction: ChatInputCommandInteraction) {
     switch (interaction.options.getSubcommand()) {
