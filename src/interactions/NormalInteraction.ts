@@ -1,4 +1,4 @@
 import { BaseInteraction } from "./BaseInteraction.js";
 
-export abstract class Interaction extends BaseInteraction<true> {
+export abstract class Interaction extends BaseInteraction<boolean> {
 }
