@@ -7,13 +7,13 @@ export async function load(client: ExtendedClient) {
   client.config.bot.token = "";
 
   const map = new Map();
-  const [commandsInteraction, contextInteraction] = await getAllInteractions(true);
+  const [commandsInteraction, contextInteraction, modelInteraction] = await getAllInteractions(true);
   map.set("commands", commandsInteraction);
   map.set("context", contextInteraction);
+  map.set("model", modelInteraction);
   client.interactions = map;
-  await getAllEvents(client, true).catch(e => {
-    console.error(e);
-  });
+
+  await getAllEvents(client, true).catch(console.error);
   await getAllManagers(client, true);
 
   // Setup client.logging

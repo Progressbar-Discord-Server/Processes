@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { Interaction } from '../../base.js';
+import { Interaction } from '../../NormalInteraction.js';
 import axios from 'axios';
 import { ExtendedClient } from '../../../Client';
 
@@ -84,7 +84,7 @@ class Get extends Interaction {
   public beta = false;
   public enable = true;
 
-  async execute(this: Get, interaction: ChatInputCommandInteraction) {
+  async execute(interaction: ChatInputCommandInteraction) {
     const client: ExtendedClient = interaction.client;
 
     if (!interaction.inGuild()) return interaction.reply("You can't use this command in DMs. (How did you even run it through DMs in the first place?)");

@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from "discord.js";
-import { Interaction } from "../../base.js"
+import { Interaction } from "../../NormalInteraction.js";
 import type { ExtendedClient } from "../../../Client.js";
 
 class Jail extends Interaction {

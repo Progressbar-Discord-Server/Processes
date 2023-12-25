@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from 'discord.js';
 import { ExtendedClient } from '../../../Client.js';
-import { Interaction } from '../../base.js';
+import { Interaction } from '../../NormalInteraction.js';
 
 class Kick extends Interaction {
   public data = new SlashCommandBuilder()

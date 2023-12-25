@@ -1,7 +1,7 @@
 import { ContextMenuCommandBuilder, ApplicationCommandType, UserContextMenuCommandInteraction } from "discord.js";
-import { Interaction } from "../../base.js";
+import { Interaction } from "../../NormalInteraction.js";
 
-class EditMessage extends Interaction {
+class Warn extends Interaction {
   public data = new ContextMenuCommandBuilder()
     .setName('Warn')
     .setDMPermission(false)
@@ -15,4 +15,4 @@ class EditMessage extends Interaction {
   }
 }
 
-export default new EditMessage();
+export default new Warn();

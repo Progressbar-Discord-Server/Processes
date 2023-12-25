@@ -1,5 +1,5 @@
-import type { Interaction } from "../interactions/base";
-import type { DOSCommands } from "../dos/commands/base";
+import type { Interaction } from "../interactions/NormalInteraction.js";
+import type { DOSCommands } from "../dos/commands/base.js";
 import { ExtendedClient } from "../Client";
 import { Events } from "../events/base";
 

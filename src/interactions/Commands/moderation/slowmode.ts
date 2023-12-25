@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, ChatInputCommandInteraction } from 'discord.js';
-import { Interaction } from '../../base.js';
+import { Interaction } from '../../NormalInteraction.js';
 
 class Slowmode extends Interaction {
   data = new SlashCommandBuilder()

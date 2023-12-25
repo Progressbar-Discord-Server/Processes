@@ -5,11 +5,11 @@ import { URL, fileURLToPath } from "node:url";
 // Events
 import type { Events } from "./events/base.js";
 // Interactions
-import type { Interaction } from "./interactions/base.js";
+import type { Interaction } from "./interactions/NormalInteraction.js";
 // Dos
 import type { DOSCommands } from './dos/commands/base';
 import { BaseManager } from "./managers/base.js";
-// Database
+import { ModelInteraction } from "./interactions/ModelInteraction.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -42,23 +42,38 @@ async function getAllFiles<T, Path extends PropertyKey = "default">(path: string
   return new Set(array);
 }
 
-export async function getAllInteractions(log = false) {
+export async function getAllInteractions(log = false): Promise<[Collection<string, Interaction>, Collection<string, Interaction>, Collection<string, ModelInteraction>]> {
   const commandsInteractions = await getAllFiles<Interaction>("interactions/Commands");
   const CollectionCommands = new Collection<string, Interaction>();
+
   const contextInteractions = await getAllFiles<Interaction>("interactions/ContextMenu")
   const CollectionContext = new Collection<string, Interaction>();
 
+  const modelInteractions = await getAllFiles<ModelInteraction>("interactions/Model");
+  const CollectionModel = new Collection<string, ModelInteraction>();
+
   for (const { default: command } of commandsInteractions) {
-    if (command?.data?.name) CollectionCommands.set(command.data.name, command);
-    if (log && command?.data?.name) console.log(`Initiated Command "${command.data.name}"`)
+    if (!command?.data?.name) continue;
+    
+    CollectionCommands.set(command.data.name, command);
+    if (log) console.log(`Initiated Command "${command.data.name}"`)
   }
 
   for (const { default: context } of contextInteractions) {
-    if (context.data.name) CollectionContext.set(context.data.name, context);
+    if (!context?.data?.name) continue;
+    
+    CollectionContext.set(context.data.name, context);
     if (log) console.log(`Initiated Context menu "${context.data.name}"`);
   }
 
-  return [CollectionCommands, CollectionContext];
+  for (const { default: model } of modelInteractions) {
+    if (!model?.name) continue;
+
+    CollectionModel.set(model.name, model);
+    if (log) console.log(`Initiated Model "${model.name}"`);
+  }
+
+  return [CollectionCommands, CollectionContext, CollectionModel];
 }
 
 export async function getAllEvents(client: ExtendedClient, log = false) {

@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
-import { Interaction } from "../../base.js";
+import { Interaction } from "../../NormalInteraction.js";
 
 class Info extends Interaction {
   public data = new SlashCommandBuilder()

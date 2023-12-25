@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder, ChannelType, ChatInputCommandInteraction } from 'discord.js';
-import { Interaction } from '../../base.js';
+import { Interaction } from '../../NormalInteraction.js';
 
 class Lock extends Interaction {
   public data = new SlashCommandBuilder()

@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown } from 'discord.js';
 import { ExtendedClient } from '../../../Client.js';
-import { Interaction } from '../../base.js';
+import { Interaction } from '../../NormalInteraction.js';
 
 class Warn extends Interaction {
   public data = new SlashCommandBuilder()

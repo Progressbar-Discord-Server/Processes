@@ -1,6 +1,5 @@
 import { ContextMenuCommandBuilder, ModalBuilder, TextInputStyle, ActionRowBuilder, TextInputBuilder, MessageContextMenuCommandInteraction, ModalActionRowComponentBuilder, ApplicationCommandType } from "discord.js";
-import { Interaction } from "../../base.js";
-
+import { Interaction } from "../../NormalInteraction.js";
 class EditMessage extends Interaction {
   public data = new ContextMenuCommandBuilder()
     .setName('Edit Bot Message')

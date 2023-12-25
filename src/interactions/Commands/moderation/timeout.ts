@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown, codeBlock } from 'discord.js';
 import { ExtendedClient } from '../../../Client.js';
-import { Interaction } from '../../base.js';
+import { Interaction } from '../../NormalInteraction.js';
 
 type TimeoutUnits = "s" | "m" | "h" | "d";
 

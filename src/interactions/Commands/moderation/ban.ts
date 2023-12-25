@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, codeBlock, escapeMarkdown } from "discord.js";
-import { Interaction } from "../../base.js";
+import { Interaction } from "../../NormalInteraction.js";
 import { ExtendedClient } from "../../../Client.js";
 
 class Ban extends Interaction {
