@@ -1,7 +1,7 @@
 import { DOSCommands } from "./base.js";
 import type { ExtendedClient } from "../../Client";
 import type { Config } from "../config";
-import { CategoryChannel, PartialGroupDMChannel, ForumChannel } from "discord.js";
+import { CategoryChannel, PartialGroupDMChannel, ForumChannel, MediaChannel } from "discord.js";
 
 class Send extends DOSCommands {
   public name = "send";
@@ -21,11 +21,13 @@ class Send extends DOSCommands {
   if (
     channel instanceof CategoryChannel ||
     channel instanceof PartialGroupDMChannel ||
-    channel instanceof ForumChannel
+    channel instanceof ForumChannel ||
+    channel instanceof MediaChannel
   ) {
     console.log("The specified channel can't countain any messages!")
     return;
   }
+
   channel.send(args.slice(1).join(" "))
 }
 }
