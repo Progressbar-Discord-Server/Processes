@@ -10,6 +10,8 @@ export class SocialsManager extends BaseManager {
 
   #socials: Social[] = [];
   public async init(this: SocialsManager, client: ExtendedClient) {
+    if (!client.config?.socials.enable) return;
+
     const __dirname = fileURLToPath(new URL(".", import.meta.url));
     const files = await readdir(__dirname + "implementations");
 
