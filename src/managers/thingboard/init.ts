@@ -52,7 +52,7 @@ export class ThingBoardManager extends BaseManager {
     if (!emojiConfig) return [false, false];
 
     let count = reaction.count || 0;
-    for (const [, e] of reaction.users.cache) if (e.bot || (author && author.id === e.id)) count--;
+    for (const [, e] of await reaction.users.fetch()) {if (e.bot || (author.id === e.id)) count--};
     
     if (count < emojiConfig.number) return [false, false];
 
