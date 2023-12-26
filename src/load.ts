@@ -5,14 +5,14 @@ import { getAllInteractions, getAllEvents, getAllManagers } from "./GetFiles.js"
 export async function load(client: ExtendedClient) {
   client.config = await import("./config.js").catch() ?? await import("./exampleConfig.js");
   client.config.bot.token = "";
-
-  const [commandsInteraction, contextInteraction, modelInteraction] = await getAllInteractions(true);
+  
+  const [commands, context, modal] = await getAllInteractions(true);
   client.interactions = {
-    commands: commandsInteraction,
-    context: contextInteraction,
-    modal: modelInteraction
+    commands,
+    context,
+    modal
   };
-
+  
   await getAllEvents(client, true).catch(console.error);
   await getAllManagers(client, true);
 

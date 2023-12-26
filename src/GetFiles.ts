@@ -9,7 +9,7 @@ import type { Interaction } from "./interactions/NormalInteraction.js";
 // Dos
 import type { DOSCommands } from './dos/commands/base';
 import { BaseManager } from "./managers/base.js";
-import { ModelInteraction } from "./interactions/ModelInteraction.js";
+import { ModelInteraction } from "./interactions/ModalInteraction.js";
 
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
@@ -49,7 +49,7 @@ export async function getAllInteractions(log = false): Promise<[Collection<strin
   const contextInteractions = await getAllFiles<Interaction>("interactions/ContextMenu")
   const CollectionContext = new Collection<string, Interaction>();
 
-  const modelInteractions = await getAllFiles<ModelInteraction>("interactions/Model");
+  const modelInteractions = await getAllFiles<ModelInteraction>("interactions/Modal");
   const CollectionModelName = new Collection<string, ModelInteraction>();
   const CollectionModelStartsWith = new Collection<string, ModelInteraction>();
 
@@ -73,7 +73,8 @@ export async function getAllInteractions(log = false): Promise<[Collection<strin
   for (const { default: model } of modelInteractions) {
     if (!model?.name) continue;
 
-    CollectionModelName.set(model.name, model);
+    if (!model.isStartOfName) CollectionModelName.set(model.name, model);
+    else CollectionModelStartsWith.set(model.name, model);
     if (log) console.log(`Initiated Model "${model.name}"`);
   }
 
