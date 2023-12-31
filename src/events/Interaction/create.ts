@@ -44,7 +44,13 @@ export default new class InteractionCreate extends Events {
     const client: ExtendedClient = interaction.client;
     if (!client.interactions) return;
 
-    let modal = client.interactions.modal.name.get(interaction.customId) || client.interactions.modal.startWith.get(interaction.customId);
+    let modal = client.interactions.modal.name.get(interaction.customId);
+    if (!modal) {
+      for (const e of client.interactions.modal.startWith.keys()) {
+        // @ts-expect-error
+        if (interaction.customId.startsWith(e)) modal = client.interactions.modal.startWith.get(e);
+      }
+    };
     if (!modal) return;
 
     await modal.execute(interaction).catch(e => {
