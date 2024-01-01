@@ -10,16 +10,16 @@ class DeployCommands extends DOSCommands {
     const pushBetaCommands = client.config.bot.beta;
 
     const all: RESTPostAPIApplicationCommandsJSONBody[] = []
-    if (client.interactions) for (const map of Object.keys(client.interactions)) {
-      // @ts-expect-error
-      for (const [, interactions] of client.interactions[map]) {
-        for (const [, interaction] of interactions) {
-          if (!interaction.data) return;
-          const betaStatus = interaction.beta ?? false;
-          const enable = interaction.enable ?? true;
-          if ((enable && !betaStatus) || (enable && betaStatus && pushBetaCommands)) all.push(interaction.data)
-        }
-      }
+    if (client.interactions?.commands) for (const command of client.interactions.commands.values()) {
+      if (command.beta && !pushBetaCommands) continue;
+      if (!command.enable) continue;
+      all.push(command.data);
+    }
+
+    if (client.interactions?.context) for (const command of client.interactions.context.values()) {
+      if (command.beta && !pushBetaCommands) continue;
+      if (!command.enable) continue;
+      all.push(command.data);
     }
 
     this.send(all, client.token ? client.token : client.config?.bot.token);
