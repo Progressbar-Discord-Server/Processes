@@ -14,6 +14,12 @@ class List extends Interaction {
         .setName("user")
         .setDescription("The user to list warnings (Id)")))
     .addSubcommand(sc => sc
+      .setName("timeout")
+      .setDescription("List timeouts")
+      .addUserOption(o => o
+        .setName("user")
+        .setDescription("The user to list timeouts (Id)")))
+    .addSubcommand(sc => sc
       .setName("bans")
       .setDescription('List bans')
       .addUserOption(o => o
@@ -61,6 +67,7 @@ class List extends Interaction {
       case "bans": return this.#checkDB(client, interaction, "ban");
       case "kicks": return this.#checkDB(client, interaction, "kick");
       case "unban": return this.#checkDB(client, interaction, "unban");
+      case "timeout": return this.#checkDB(client, interaction, "timeout");
     }
 
     switch (interaction.options.getSubcommandGroup()) {
@@ -73,7 +80,7 @@ class List extends Interaction {
     }
   }
 
-  async #checkDB(client: ExtendedClient, interaction: ChatInputCommandInteraction<'cached' | 'raw'>, dbName: "warn" | "kick" | "ban" | "unban" | "Jail added" | "Jail removed") {
+  async #checkDB(client: ExtendedClient, interaction: ChatInputCommandInteraction<'cached' | 'raw'>, dbName: "warn" | "kick" | "ban" | "unban" | "Jail added" | "Jail removed" | "timeout") {
     let guild = <Guild>interaction.guild;
     if (!interaction.inCachedGuild()) guild = await client.guilds.fetch(interaction.guildId);
 
