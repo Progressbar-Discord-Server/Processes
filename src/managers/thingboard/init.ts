@@ -25,7 +25,7 @@ export class ThingBoardManager extends BaseManager {
     for (const e of Object.values(this.#channel)) if (e.id === message.channelId) return;
 
     const config: Config | undefined = client.config?.thingboard;
-    const [emoji, count] = await this.#ReactionCountChecker(rec, user, config);
+    const [emoji, count] = await this.#ReactionCountChecker(rec, config);
     if (!emoji && !count) return;
 
     const DBMessageBotId = await this.#checkSent(client.db?.star, message.id, emoji);
@@ -45,14 +45,20 @@ export class ThingBoardManager extends BaseManager {
     this.#channel[emoji].messages.edit(messageBotId, {content: `${emoji} **${count}** | <#${message.channel.id}>`, embeds: embed, components: buttons})
   }
 
-  async #ReactionCountChecker(reaction: MessageReaction, author: User, config: Config | undefined): Promise<[false, false] | [string, number]> {
+  async #ReactionCountChecker(reaction: MessageReaction, config: Config | undefined): Promise<[false, false] | [string, number]> {
     if (!config?.enable) return [false, false];
+    let msg = !reaction.message.partial ? reaction.message : await reaction.message.fetch();
 
     const emojiConfig = config.emoji.find(value => value.emoji == reaction?.emoji.name);
     if (!emojiConfig) return [false, false];
 
     let count = reaction.count || 0;
-    for (const [, e] of await reaction.users.fetch()) {if (e.bot || (author.id === e.id)) count--};
+    for (const [, user] of await reaction.users.fetch()) {
+      // if the user is a bot, remove it from the count
+      if (user.bot) {count--; continue}
+      // if the user is the same that sent the message, remove it from the count
+      if (user.id === msg.author.id) {count--; continue}
+    };
     
     if (count < emojiConfig.number) return [false, false];
 
