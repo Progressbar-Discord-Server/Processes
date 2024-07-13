@@ -45,6 +45,10 @@ export interface BaseConfig {
     givenRole: RoleResolvable;
     protectorRole: RoleResolvable;
   },
+
+  wallpaper: {
+    allowed: string[],
+  }
 }
 
 export interface EmojiObject {

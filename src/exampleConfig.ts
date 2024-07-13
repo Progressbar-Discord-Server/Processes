@@ -42,3 +42,7 @@ export const jail = {
   givenRole: "974018133037809674",
   protectorRole: "",
 };
+
+export const wallpaper = {
+  allowed: ["602717952550275"]
+}
