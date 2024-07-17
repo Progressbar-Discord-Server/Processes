@@ -39,7 +39,7 @@ class Wallpaper extends Interaction {
     });
 
     this.#lastUse = new Date(Date.now());
-    this.#lastUse.setDate(this.#lastUse.getDate()+1);
+    this.#lastUse.setHours(this.#lastUse.getHours()+23);
   }
 }
 
