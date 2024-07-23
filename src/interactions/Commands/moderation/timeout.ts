@@ -57,7 +57,7 @@ class Timeout extends Interaction {
     const reason = interaction.options.getString('reason') || "No reason provided";
     const lengthNUnit = interaction.options.getString('length', true);
 
-    const unitChar = lengthNUnit[lengthNUnit.length - 1];
+    const unitChar = lengthNUnit.split(" ")[0][lengthNUnit.length - 1];
     const RealLen = parseInt(lengthNUnit.slice(0, -1));
 
     if (!this.#isValidUnit(unitChar)) {
