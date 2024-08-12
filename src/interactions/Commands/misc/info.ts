@@ -44,7 +44,7 @@ class Info extends Interaction {
             .setDescription(`<@${user.id}>`)
             .setColor(Math.floor(Math.random() * 16777215))
             .addFields(
-              { name: "**Joined**", value: `<t:${Math.floor(member.joinedTimestamp || NaN / 1000)}:f> (<t:${Math.floor(member.joinedTimestamp || NaN / 1000)}:R>)`, inline: true },
+              { name: "**Joined**", value: `<t:${Math.floor((member.joinedTimestamp || NaN) / 1000)}:f> (<t:${Math.floor(member.joinedTimestamp || NaN / 1000)}:R>)`, inline: true },
               { name: "**Registered**", value: `<t:${Math.floor(user.createdTimestamp / 1000)}:f> (<t:${Math.floor(user.createdTimestamp / 1000)}:R>)`, inline: true },
               { name: `**Roles [${member.roles.cache.size - 1}]**`, value: roles.join(", ") ? roles.join(", ") : "*none*" },
             )
