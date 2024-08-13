@@ -18,10 +18,10 @@ export class ThingBoardManager extends BaseManager {
   public async check(reaction: MessageReaction | PartialMessageReaction, user: User) {
     const rec = !reaction.partial ? reaction : await reaction.fetch();
     const client: ExtendedClient = rec.client;
-    
+
     const message = rec.message;
     if (!this.#underNumDays(message.createdTimestamp)) return;
-    
+
     for (const e of Object.values(this.#channel)) if (e.id === message.channelId) return;
 
     const config: Config | undefined = client.config?.thingboard;
@@ -40,9 +40,9 @@ export class ThingBoardManager extends BaseManager {
     const embed = await this.#createEmbed(msg);
     const buttons = await this.#createButton(msg);
 
-    if (!messageBotId) return (await this.#channel[emoji].send({content: `${emoji} **${count}** | <#${message.channel.id}>`, embeds: embed, components: buttons})).id;
+    if (!messageBotId) return (await this.#channel[emoji].send({ content: `${emoji} **${count}** | <#${message.channel.id}>`, embeds: embed, components: buttons })).id;
 
-    this.#channel[emoji].messages.edit(messageBotId, {content: `${emoji} **${count}** | <#${message.channel.id}>`, embeds: embed, components: buttons})
+    this.#channel[emoji].messages.edit(messageBotId, { content: `${emoji} **${count}** | <#${message.channel.id}>`, embeds: embed, components: buttons })
   }
 
   async #ReactionCountChecker(reaction: MessageReaction, config: Config | undefined): Promise<[false, false] | [string, number]> {
@@ -55,11 +55,11 @@ export class ThingBoardManager extends BaseManager {
     let count = reaction.count || 0;
     for (const [, user] of await reaction.users.fetch()) {
       // if the user is a bot, remove it from the count
-      if (user.bot) {count--; continue}
+      if (user.bot) { count--; continue }
       // if the user is the same that sent the message, remove it from the count
-      if (user.id === msg.author.id) {count--; continue}
+      if (user.id === msg.author.id) { count--; continue }
     };
-    
+
     if (count < emojiConfig.number) return [false, false];
 
     return [emojiConfig.emoji, count];
@@ -72,7 +72,7 @@ export class ThingBoardManager extends BaseManager {
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24))
 
     if (diffDays > 20) return false;
-    
+
     return true;
   }
 
@@ -81,26 +81,29 @@ export class ThingBoardManager extends BaseManager {
     const avatar = author.avatarURL({ extension: "png", size: 512 }) ?? undefined;
 
     const embed = new EmbedBuilder()
-      .setAuthor({ name: author.discriminator !== "#0" ? author.username : `${author.username}#${author.discriminator}`, iconURL: avatar})
+      .setAuthor({ name: author.discriminator !== "#0" ? author.username : `${author.username}#${author.discriminator}`, iconURL: avatar })
       .setColor(Math.floor(Math.random() * 16777215))
       .setTimestamp(new Date());
 
-    if (message.content) embed.setDescription(message.content)
+    if (message.content) embed.setDescription(message.content.length > 1024 ? message.content.slice(0, 1020) + "..." : message.content)
     else if (message.embeds[0]) {
-      let yesnt = true
-      message.embeds.forEach(e => { if (e.description && yesnt) { embed.setDescription(e.description); yesnt = false } })
+      for (const e of message.embeds) {
+        if (e.description) {
+          embed.setDescription(e.description);
+          break;
+        }
+      }
     }
 
     if (message.attachments.size) embed.setImage(message.attachments.first()?.url ?? null)
 
     if (message.type === MessageType.Reply) {
-      await message.fetchReference().then(reference => {
-        if (reference.content) embed.setFields({ name: "Replied to:", value: reference.content })
-        else if (reference.embeds[0]) {
-          let yesnt = true
-          reference.embeds.forEach(e => { if (e.description && yesnt) { embed.setFields({ name: "Replied to:", value: e.description }); yesnt = false } })
-        }
-      })
+      const ref = await message.fetchReference()
+      if (ref.content) embed.setFields({ name: "Replied to:", value: ref.content })
+      else if (ref.embeds[0]) {
+        let yesnt = true
+        ref.embeds.forEach(e => { if (e.description && yesnt) { embed.setFields({ name: "Replied to:", value: e.description }); yesnt = false } })
+      }
     }
 
     return [embed]
@@ -127,7 +130,7 @@ export class ThingBoardManager extends BaseManager {
 
   async #saveInDB(reaction: MessageReaction, emoji: string, messageIdBot: string) {
     const client: ExtendedClient = reaction.client;
-    
+
     const db = client.db?.star;
     if (!db) return console.error("Database not found. (thingboard)");
 
@@ -142,10 +145,10 @@ export class ThingBoardManager extends BaseManager {
 
   async #checkSent(db: ModelStatic<Model<any, any>> | undefined, messageId: string, emoji: string): Promise<false | string> {
     if (!db) return false;
-    const DBresult = await db.findOne({where: {messageId, emoji}});
+    const DBresult = await db.findOne({ where: { messageId, emoji } });
 
     if (!(DBresult)) return false
-    
+
     return DBresult.dataValues.messageIdBot;
   }
 }
