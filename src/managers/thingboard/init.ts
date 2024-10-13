@@ -1,5 +1,4 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, MessageReaction, MessageType, PartialMessage, User, TextBasedChannel, PartialMessageReaction } from "discord.js";
-import { ExtendedClient } from "../../Client";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Message, MessageReaction, MessageType, PartialMessage, SendableChannels, PartialMessageReaction, Client } from "discord.js";
 import { BaseManager } from "../base.js";
 import { ThingBoardEmoji } from "../../baseConfig";
 import { Model, ModelStatic } from "sequelize";
@@ -7,18 +6,18 @@ import { Model, ModelStatic } from "sequelize";
 export class ThingBoardManager extends BaseManager {
   public name = "thingboard";
 
-  #channel: Record<string, TextBasedChannel> = {};
-  public async init(this: ThingBoardManager, client: ExtendedClient) {
+  #channel: Record<string, SendableChannels> = {};
+  public async init(this: ThingBoardManager, client: Client) {
     for (const e of client.config?.thingboard.emoji ?? []) {
       const channel = await (await client.guilds.fetch(e.serverId)).channels.fetch(e.channelId);
       if (channel?.isTextBased()) this.#channel[e.emoji] = channel;
     }
   }
 
-  public async check(reaction: MessageReaction | PartialMessageReaction, user: User) {
+  public async check(reaction: MessageReaction | PartialMessageReaction) {
     const rec = !reaction.partial ? reaction : await reaction.fetch();
-    const client: ExtendedClient = rec.client;
-
+    const client = rec.client;
+    
     const message = rec.message;
     if (!this.#underNumDays(message.createdTimestamp)) return;
 
@@ -47,7 +46,7 @@ export class ThingBoardManager extends BaseManager {
 
   async #ReactionCountChecker(reaction: MessageReaction, config: Config | undefined): Promise<[false, false] | [string, number]> {
     if (!config?.enable) return [false, false];
-    let msg = !reaction.message.partial ? reaction.message : await reaction.message.fetch();
+    const msg = !reaction.message.partial ? reaction.message : await reaction.message.fetch();
 
     const emojiConfig = config.emoji.find(value => value.emoji == reaction?.emoji.name);
     if (!emojiConfig) return [false, false];
@@ -57,8 +56,11 @@ export class ThingBoardManager extends BaseManager {
       // if the user is a bot, remove it from the count
       if (user.bot) { count--; continue }
       // if the user is the same that sent the message, remove it from the count
-      if (user.id === msg.author.id) { count--; continue }
-    };
+      if (user.id === msg.author.id) {
+        count--;
+        continue;
+      }
+    }
 
     if (count < emojiConfig.number) return [false, false];
 
@@ -129,8 +131,8 @@ export class ThingBoardManager extends BaseManager {
   }
 
   async #saveInDB(reaction: MessageReaction, emoji: string, messageIdBot: string) {
-    const client: ExtendedClient = reaction.client;
-
+    const client = reaction.client;
+    
     const db = client.db?.star;
     if (!db) return console.error("Database not found. (thingboard)");
 

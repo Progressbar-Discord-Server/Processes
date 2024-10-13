@@ -1,5 +1,4 @@
-import { MessageReaction, PartialMessageReaction, User } from "discord.js";
-import { ExtendedClient } from "../../Client";
+import { Client, MessageReaction, PartialMessageReaction, User } from "discord.js";
 import { BaseManager } from "../base.js";
 import { readdir } from "node:fs/promises";
 import { URL, fileURLToPath } from "node:url";
@@ -9,7 +8,7 @@ export class SocialsManager extends BaseManager {
   public name = "socials";
 
   #socials: Social[] = [];
-  public async init(this: SocialsManager, client: ExtendedClient) {
+  public async init(this: SocialsManager, client: Client) {
     if (!client.config?.socials.enable) return;
 
     const __dirname = fileURLToPath(new URL(".", import.meta.url));
@@ -31,7 +30,7 @@ export class SocialsManager extends BaseManager {
 
   public async check(reaction: MessageReaction | PartialMessageReaction, user: User) {
     const rec = !reaction.partial ? reaction : await reaction.fetch();
-    const client: ExtendedClient = rec.client;
+    const client = rec.client;
     const config = client.config?.socials.socials;
     if (!config) return;
     if (!this.#checkReaction(rec, user)) return;
@@ -48,7 +47,7 @@ export class SocialsManager extends BaseManager {
   }
 
   #checkReaction(reaction: MessageReaction, author: User): boolean {
-    const client: ExtendedClient = reaction.client;
+    const client = reaction.client;
     const config = client.config?.socials;
 
     if (!config) return false;

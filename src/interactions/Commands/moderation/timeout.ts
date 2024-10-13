@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown, codeBlock } from 'discord.js';
-import { ExtendedClient } from '../../../Client.js';
+import { Client } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 type TimeoutUnits = "s" | "m" | "h" | "d";
@@ -52,7 +52,7 @@ class Timeout extends Interaction {
 
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply()
-    const client: ExtendedClient<true> = interaction.client;
+    const client: Client<true> = interaction.client;
     const user = interaction.options.getUser("user", true);
     const reason = interaction.options.getString('reason') || "No reason provided";
     const lengthNUnit = interaction.options.getString('length', true);

@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from 'discord.js';
-import { ExtendedClient } from '../../../Client.js';
+import { Client } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 class Kick extends Interaction {
@@ -21,7 +21,7 @@ class Kick extends Interaction {
   public beta = false;
   public enable = true;
   async execute(interaction: ChatInputCommandInteraction) {
-    const client: ExtendedClient = interaction.client;
+    const client: Client = interaction.client;
     await interaction.deferReply()
     const user = interaction.options.getUser("user", true);
     const reason = interaction.options.getString("reason") || "No reason provided";

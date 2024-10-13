@@ -1,10 +1,10 @@
 import { DOSCommands } from "./base.js";
-import type { ExtendedClient } from "../../Client";
+import type { Client } from "discord.js";
 import type { Config } from "../config";
 
 class Reload extends DOSCommands {
   public name = "reload";
-  public execute = async (config: Config, client: ExtendedClient) => {
+  public execute = async (config: Config, client: Client) => {
     switch (config.drives.current) {
       case "S": {
         console.log("Reloading servers, Please wait...")

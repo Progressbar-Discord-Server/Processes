@@ -1,4 +1,4 @@
-import type { ExtendedClient } from "./Client"
+import { Client } from "discord.js"
 
 export const bot = {
   token: "MTg0NTY5NTY5NTQ4NAo=.zeDef.HBJ952e4feaff68ez4",
@@ -34,7 +34,7 @@ export const socials = {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function start(client: ExtendedClient) {
+export function start(client: Client) {
 
 }
 

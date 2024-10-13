@@ -1,11 +1,11 @@
 import { DOSCommands } from "../base.js";
-import type { ExtendedClient } from "../../../Client";
+import type { Client } from "discord.js";
 import type { Config } from "../../config";
 import { access } from "node:fs/promises";
 
 class Cd extends DOSCommands {
   public name = "cd";
-  public execute = async (config: Config, client: ExtendedClient, args: string[]) => {
+  public execute = async (config: Config, client: Client, args: string[]) => {
     const newDir = args.join(" ")
     if (newDir === "..") {
       if (config.depth == 0) return

@@ -1,11 +1,11 @@
 import { DOSCommands } from "./base.js";
-import type { ExtendedClient } from "../../Client";
+import type { Client } from "discord.js";
 import type { Config } from "../config";
 import { CategoryChannel } from "discord.js";
 
 class Tail extends DOSCommands {
   public name = "tail";
-  async execute(config: Config, client: ExtendedClient, args: string[]) {
+  async execute(config: Config, client: Client, args: string[]) {
     if (config.drives.current === "C" || config.drives.S.current == null) {
       console.log("Please, enter a server in the 'S' drive");
       return;

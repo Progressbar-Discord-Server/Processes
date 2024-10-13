@@ -1,5 +1,4 @@
-import type { ExtendedClient } from "./Client.js";
-import { Collection } from "discord.js";
+import { Client, Collection } from "discord.js";
 import { readdir } from "fs/promises";
 import { URL, fileURLToPath } from "node:url";
 // Events
@@ -81,7 +80,7 @@ export async function getAllInteractions(log = false): Promise<[Collection<strin
   return [CollectionCommands, CollectionContext, {name: CollectionModelName, startWith: CollectionModelStartsWith}];
 }
 
-export async function getAllEvents(client: ExtendedClient, log = false) {
+export async function getAllEvents(client: Client, log = false) {
   const events = await getAllFiles<Events>("events");
 
   for (const {default: event} of events) {
@@ -108,7 +107,7 @@ export async function getAllDOSCommands() {
   return CollectionDosCommands
 }
 
-export async function getAllManagers(client: ExtendedClient, log = false) {
+export async function getAllManagers(client: Client, log = false) {
   const managers = await getAllFiles<BaseManager>("managers", [], 1);
   client.managers = {};
 

@@ -1,5 +1,4 @@
-import { RoleResolvable } from "discord.js";
-import { ExtendedClient } from "./Client";
+import { Client, RoleResolvable } from "discord.js";
 
 export interface BaseConfig {
   bot: {
@@ -39,7 +38,7 @@ export interface BaseConfig {
     }
   },
 
-  start?: (client: ExtendedClient) => any;
+  start?: (client: Client) => any;
 
   jail: {
     givenRole: RoleResolvable;

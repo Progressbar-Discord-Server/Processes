@@ -1,8 +1,7 @@
 import { Client, GatewayIntentBits , Partials } from "discord.js";
-import { ExtendedClient } from "./Client.js";
 import { load } from "./load.js";
 
-const client: ExtendedClient = new Client({
+const client = new Client({
   intents: [
     GatewayIntentBits.GuildMessages,
     GatewayIntentBits.MessageContent,
@@ -23,6 +22,7 @@ const client: ExtendedClient = new Client({
   }
 })
 
-load(client);
+client.token = client.config ? client.config.bot.token : (await import("./config.js")).bot.token;
+await load(client);
 
-client.login(client.config ? client.config.bot.token : (await import("./config.js")).bot.token)
+client.login()

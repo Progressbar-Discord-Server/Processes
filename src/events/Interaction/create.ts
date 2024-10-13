@@ -1,5 +1,4 @@
 import { ChatInputCommandInteraction, ContextMenuCommandInteraction, ModalSubmitInteraction, codeBlock, Interaction } from "discord.js";
-import { ExtendedClient } from "../../Client";
 import { Events } from "../base.js";
 
 export default new class InteractionCreate extends Events {
@@ -13,7 +12,7 @@ export default new class InteractionCreate extends Events {
   }
   
   async getCommand(interaction: ChatInputCommandInteraction): Promise<void> {
-    const client: ExtendedClient = interaction.client;
+    const client = interaction.client;
     if (!client.interactions) return;
 
     const command = client.interactions.commands.get(interaction.commandName);
@@ -27,7 +26,7 @@ export default new class InteractionCreate extends Events {
   }
 
   async getContext(interaction: ContextMenuCommandInteraction): Promise<void> {
-    const client: ExtendedClient = interaction.client;
+    const client = interaction.client;
     if (!client.interactions) return;
 
     const context = client.interactions.context.get(interaction.commandName);
@@ -41,7 +40,7 @@ export default new class InteractionCreate extends Events {
   }
 
   async getModal(interaction: ModalSubmitInteraction) {
-    const client: ExtendedClient = interaction.client;
+    const client = interaction.client;
     if (!client.interactions) return;
 
     let modal = client.interactions.modal.name.get(interaction.customId);
@@ -50,7 +49,7 @@ export default new class InteractionCreate extends Events {
         // @ts-expect-error
         if (interaction.customId.startsWith(e)) modal = client.interactions.modal.startWith.get(e);
       }
-    };
+    }
     if (!modal) return;
 
     await modal.execute(interaction).catch(e => {

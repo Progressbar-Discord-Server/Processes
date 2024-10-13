@@ -1,6 +1,6 @@
 import { ChatInputCommandInteraction, Guild, SlashCommandBuilder, PermissionFlagsBits } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
-import { ExtendedClient } from '../../../Client.js';
+import { Client } from 'discord.js';
 
 class List extends Interaction {
   data = new SlashCommandBuilder()
@@ -60,7 +60,7 @@ class List extends Interaction {
     await interaction.deferReply({ ephemeral: true });
     if (!interaction.inGuild()) return interaction.followUp("This command cannot be run in DMs.")
 
-    const client: ExtendedClient = interaction.client;
+    const client: Client = interaction.client;
 
     switch (interaction.options.getSubcommand(true)) {
       case "warns": return this.#checkDB(client, interaction, "warn");
@@ -80,7 +80,7 @@ class List extends Interaction {
     }
   }
 
-  async #checkDB(client: ExtendedClient, interaction: ChatInputCommandInteraction<'cached' | 'raw'>, dbName: "warn" | "kick" | "ban" | "unban" | "Jail added" | "Jail removed" | "timeout") {
+  async #checkDB(client: Client, interaction: ChatInputCommandInteraction<'cached' | 'raw'>, dbName: "warn" | "kick" | "ban" | "unban" | "Jail added" | "Jail removed" | "timeout") {
     let guild = <Guild>interaction.guild;
     if (!interaction.inCachedGuild()) guild = await client.guilds.fetch(interaction.guildId);
 

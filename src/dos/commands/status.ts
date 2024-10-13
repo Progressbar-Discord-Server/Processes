@@ -1,11 +1,11 @@
 import { DOSCommands } from "./base.js";
-import type { ExtendedClient } from "../../Client";
+import type { Client } from "discord.js";
 import type { Config } from "../config";
 import { PresenceStatusData, ActivitiesOptions } from "discord.js";
 
 class Status extends DOSCommands {
   public name = "status";
-  public execute = async (config: Config, client: ExtendedClient<true>, args: string[]) => {
+  public execute = async (config: Config, client: Client<true>, args: string[]) => {
     if (!client.isReady()) return;
 
     if (args.join("").trim() == "") client.user.setActivity()

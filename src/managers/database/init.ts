@@ -1,12 +1,12 @@
 import type { Model, ModelStatic } from "sequelize";
 import Sequelize from 'sequelize';
 import { readdir } from "node:fs/promises";
-import { ExtendedClient } from "../../Client.js";
+import { Client } from "discord.js";
 import { BaseManager } from "../base.js";
 
 export default new class DatabaseManager extends BaseManager {
   public name = "database";
-  public async init(client: ExtendedClient) {
+  public async init(client: Client) {
     const __dirname = (await import("node:url")).fileURLToPath(new URL(".", import.meta.url));
 
     if (!client.config) return;

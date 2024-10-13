@@ -1,11 +1,11 @@
-import type { ExtendedClient } from "../../Client.js";
+import type { Client } from "discord.js";
 import { REST, Routes, type RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
 import type { Config } from "../config.js";
 import { DOSCommands } from "./base.js";
 
 class DeployCommands extends DOSCommands {
   public name = "deploy";
-  public execute = async (config: Config, client: ExtendedClient) => {
+  public execute = async (config: Config, client: Client) => {
     if (!client.config) return;
     const pushBetaCommands = client.config.bot.beta;
 

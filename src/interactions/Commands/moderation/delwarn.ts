@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChatInputCommandInteraction } from 'discord.js';
-import { ExtendedClient } from "../../../Client.js";
+import { Client } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
 
 
@@ -18,7 +18,7 @@ class Delogs extends Interaction{
   public beta = false;
   public enable = true;
   async execute(interaction: ChatInputCommandInteraction) {
-    const client: ExtendedClient = interaction.client;
+    const client: Client = interaction.client;
     const id = interaction.options.getNumber("case", true);
     await interaction.deferReply({ ephemeral: true });
     const deletedRows = await client.db?.cases.destroy({ where: { id: id } });

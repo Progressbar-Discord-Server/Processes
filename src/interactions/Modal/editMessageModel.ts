@@ -1,5 +1,4 @@
 import { CategoryChannel, ModalSubmitInteraction, PartialGroupDMChannel } from "discord.js";
-import { ExtendedClient } from "../../Client";
 import { ModelInteraction } from "../ModalInteraction.js";
 
 class EditMessageModel extends ModelInteraction {
@@ -9,7 +8,7 @@ class EditMessageModel extends ModelInteraction {
   public isStartOfName = true;
 
   async execute(interaction: ModalSubmitInteraction): Promise<any> {
-    const client: ExtendedClient = interaction.client;
+    const client = interaction.client;
     const customId = interaction.customId;
 
     const Ids = customId.split("-");

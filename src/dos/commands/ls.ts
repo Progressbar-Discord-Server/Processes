@@ -1,11 +1,11 @@
 import { DOSCommands } from "./base.js";
-import type { ExtendedClient } from "../../Client";
+import type { Client } from "discord.js";
 import type { Config } from "../config";
 import { readdir } from "node:fs/promises";
 
 class Ls extends DOSCommands {
   public name = ["dir", "ls"];
-  public execute = async (config: Config, client: ExtendedClient) => {
+  public execute = async (config: Config, client: Client) => {
     console.log(`\n Volume in drive ${config.drives.current} is ${config.drives.label}`)
     console.log(` Volume Serial Number is 298A-E8CC`)
     console.log(` Directory of ${config.drives.current}:${config.drives.dir.join("")}\n`)

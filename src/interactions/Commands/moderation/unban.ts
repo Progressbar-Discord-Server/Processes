@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, EmbedBuilder, escapeMarkdown, ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
-import { ExtendedClient } from '../../../Client.js';
+import { Client } from 'discord.js';
 
 class Unban extends Interaction {
   public data = new SlashCommandBuilder()
@@ -22,7 +22,7 @@ class Unban extends Interaction {
 
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply();
-    const client: ExtendedClient = interaction.client;
+    const client: Client = interaction.client;
     const user = interaction.options.getUser("user");
     if (!user) return interaction.followUp("No user provided (How did you even do that)");
     const reason = interaction.options.getString("reason") || "No reason provided";

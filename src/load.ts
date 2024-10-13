@@ -1,8 +1,7 @@
-import { Channel } from "discord.js";
-import type { ExtendedClient } from "./Client.js";
+import { Channel, Client } from "discord.js";
 import { getAllInteractions, getAllEvents, getAllManagers } from "./GetFiles.js";
 
-export async function load(client: ExtendedClient) {
+export async function load(client: Client) {
   client.config = await import("./config.js").catch() ?? await import("./exampleConfig.js");
   client.config.bot.token = "";
   

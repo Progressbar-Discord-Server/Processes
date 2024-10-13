@@ -1,5 +1,5 @@
 import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown } from 'discord.js';
-import { ExtendedClient } from '../../../Client.js';
+import { Client } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 class Warn extends Interaction {
@@ -23,7 +23,7 @@ class Warn extends Interaction {
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply();
 
-    const client: ExtendedClient<true> = interaction.client;
+    const client: Client<true> = interaction.client;
     const user = interaction.options.getUser("user", true);
     const reason = interaction.options.getString("reason", true);
     const db = client.db?.cases;

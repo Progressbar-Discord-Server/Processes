@@ -1,13 +1,13 @@
-import type { ExtendedClient } from "../../Client";
 import { ProcessDOS } from "../../dos/main.js"
 import { Events } from "../base.js";
 import { errorToEmbed } from "../../util/errorConverter.js";
+import { Client } from "discord.js";
 
 export default new class ClientReady extends Events {
   public name = "ready" as const;
   public once = true;
 
-  async execute(client: ExtendedClient<true>): Promise<void> {
+  async execute(client: Client<true>): Promise<void> {
     console.log(`Connected as ${client.user.discriminator !== "#0" ? client.user.username : `${client.user.username}#${client.user.discriminator}`}`);
     ProcessDOS(client);
 

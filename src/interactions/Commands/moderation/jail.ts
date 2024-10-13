@@ -1,8 +1,7 @@
 import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
-import type { ExtendedClient } from "../../../Client.js";
 
-class Jail extends Interaction {
+export default new class Jail extends Interaction {
   public data = new SlashCommandBuilder()
     .setName("jail")
     .setDescription("Jail a user.")
@@ -22,7 +21,7 @@ class Jail extends Interaction {
 
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply();
-    const client: ExtendedClient = interaction.client;
+    const client = interaction.client;
     const user = interaction.options.getUser("user", true);
     const reason = interaction.options.getString("reason") ?? "No reason provided.";
 
@@ -97,5 +96,3 @@ class Jail extends Interaction {
     if (client.logging?.moderation) client.logging.moderation.send({ embeds: [logEmbed] })
   }
 }
-
-export default new Jail();

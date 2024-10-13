@@ -1,11 +1,11 @@
-import type { ExtendedClient } from '../Client';
+import { Client } from "discord.js";
 import type { Config } from "./config.js"
 import { readdir } from 'node:fs/promises';
 import { createInterface } from 'readline/promises';
 import { stdin as input, stdout as output } from "node:process";
 import { getAllDOSCommands } from "../GetFiles.js";
 
-export async function ProcessDOS(client: ExtendedClient<true>) {
+export async function ProcessDOS(client: Client<true>) {
   const commands = await getAllDOSCommands();
   const cmd = createInterface(input, output);
   

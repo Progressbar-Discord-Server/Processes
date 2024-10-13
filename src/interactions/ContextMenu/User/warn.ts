@@ -1,11 +1,11 @@
-import { ContextMenuCommandBuilder, ApplicationCommandType, UserContextMenuCommandInteraction } from "discord.js";
+import { ContextMenuCommandBuilder, ApplicationCommandType, UserContextMenuCommandInteraction, InteractionContextType } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
 
 class Warn extends Interaction {
   public data = new ContextMenuCommandBuilder()
     .setName('Warn')
-    .setDMPermission(false)
-    .setType(ApplicationCommandType.User)
+    .setContexts(InteractionContextType.Guild)
+    .setType(2)
     .toJSON();
 
   public beta = false;
