@@ -23,6 +23,6 @@ const client = new Client({
 })
 
 client.token = client.config ? client.config.bot.token : (await import("./config.js")).bot.token;
-await load(client);
-
 client.login()
+
+await load(client);
