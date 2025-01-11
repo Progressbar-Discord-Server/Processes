@@ -1,12 +1,11 @@
-import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown } from 'discord.js';
-import { Client } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown, Client, InteractionContextType } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 class Warn extends Interaction {
   public data = new SlashCommandBuilder()
     .setName('warn')
     .setDescription("warn a user")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .addUserOption(o => o
       .setName("user")

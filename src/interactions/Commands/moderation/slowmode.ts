@@ -1,11 +1,11 @@
-import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 class Slowmode extends Interaction {
   data = new SlashCommandBuilder()
     .setName('slowmode')
     .setDescription("Set a slowmode in a channel")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
     .addChannelOption(o => o
       .setName("channel")

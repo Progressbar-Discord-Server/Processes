@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, EmbedBuilder, escapeMarkdown, ChatInputCommandInteraction, PermissionFlagsBits } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, escapeMarkdown, ChatInputCommandInteraction, PermissionFlagsBits, InteractionContextType } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 import { Client } from 'discord.js';
 
@@ -6,7 +6,7 @@ class Unban extends Interaction {
   public data = new SlashCommandBuilder()
     .setName('unban')
     .setDescription("Unbans a user")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
     .addUserOption(o => o
       .setDescription("The user to unban")

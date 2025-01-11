@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import { ChatInputCommandInteraction, SlashCommandBuilder, InteractionContextType } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 import axios from 'axios';
 import { Client } from 'discord.js';
@@ -7,7 +7,7 @@ class Get extends Interaction {
   public data = new SlashCommandBuilder()
     .setName('get')
     .setDescription("Get something")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommandGroup(scg => scg.setName("role")
       .setDescription("Getting info about roles")
       .addSubcommand(sc => sc

@@ -1,11 +1,11 @@
-import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown, InteractionContextType } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
 
 export default new class Jail extends Interaction {
   public data = new SlashCommandBuilder()
     .setName("jail")
     .setDescription("Jail a user.")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
     .addUserOption(o => o
       .setName("user")

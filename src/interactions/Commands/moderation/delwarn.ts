@@ -1,14 +1,13 @@
-import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChatInputCommandInteraction } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChatInputCommandInteraction, InteractionContextType } from 'discord.js';
 import { Client } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
-
 
 class Delogs extends Interaction{
   public data = new SlashCommandBuilder()
     .setName('delogs')
     .setDescription("Delete a case")
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addNumberOption(o => o
       .setName("case")
       .setDescription("Which case need to be deleted?")

@@ -1,11 +1,11 @@
-import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction } from "discord.js";
+import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, InteractionContextType } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
 
 class Info extends Interaction {
   public data = new SlashCommandBuilder()
     .setName("info")
     .setDescription("Get information about something")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addSubcommand(sc => sc
       .setName("server")
       .setDescription("Get Information about the server"))

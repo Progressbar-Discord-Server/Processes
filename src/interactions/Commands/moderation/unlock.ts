@@ -1,11 +1,11 @@
-import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, ChannelType } from 'discord.js';
+import { SlashCommandBuilder, EmbedBuilder, ChatInputCommandInteraction, ChannelType, InteractionContextType } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 class Unlock extends Interaction {
   public data = new SlashCommandBuilder()
     .setName('unlock')
     .setDescription("Unlock a channel")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addChannelOption(o => o
       .setName("channel")
       .setDescription("The channel to lock")

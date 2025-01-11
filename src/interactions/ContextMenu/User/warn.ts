@@ -1,4 +1,4 @@
-import { ContextMenuCommandBuilder, ApplicationCommandType, UserContextMenuCommandInteraction, InteractionContextType } from "discord.js";
+import { ContextMenuCommandBuilder, UserContextMenuCommandInteraction, InteractionContextType } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
 
 class Warn extends Interaction {

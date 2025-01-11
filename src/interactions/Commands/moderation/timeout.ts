@@ -1,5 +1,4 @@
-import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown, codeBlock } from 'discord.js';
-import { Client } from 'discord.js';
+import { SlashCommandBuilder, PermissionFlagsBits, ChatInputCommandInteraction, EmbedBuilder, escapeMarkdown, codeBlock, Client, InteractionContextType } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 type TimeoutUnits = "s" | "m" | "h" | "d";
@@ -13,7 +12,7 @@ class Timeout extends Interaction {
   public data = new SlashCommandBuilder()
     .setName('timeout')
     .setDescription(`Timeout a member for up to 28 days.`)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .addUserOption(o => o
       .setName("user")

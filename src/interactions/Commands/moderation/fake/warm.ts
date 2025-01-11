@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, EmbedBuilder, escapeMarkdown } from "discord.js";
+import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, EmbedBuilder, escapeMarkdown, InteractionContextType } from "discord.js";
 import { Interaction } from "../../../NormalInteraction.js";
 import { Client } from "discord.js";
 
@@ -6,7 +6,7 @@ class Warm extends Interaction {
   public data = new SlashCommandBuilder()
     .setName("warm")
     .setDescription("Joke warn")
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .setDefaultMemberPermissions(PermissionFlagsBits.ModerateMembers)
     .addUserOption(o => o
       .setName("user")

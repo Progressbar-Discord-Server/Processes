@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, codeBlock, escapeMarkdown } from "discord.js";
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, codeBlock, escapeMarkdown, InteractionContextType } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
 import { Client } from "discord.js";
 
@@ -7,7 +7,7 @@ class Ban extends Interaction {
     .setName("ban")
     .setDescription("Ban a member")
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addUserOption(o => o
       .setName("user")
       .setDescription("The user to ban")

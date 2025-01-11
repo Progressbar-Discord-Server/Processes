@@ -1,5 +1,4 @@
-import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown } from 'discord.js';
-import { Client } from 'discord.js';
+import { ChatInputCommandInteraction, EmbedBuilder, PermissionFlagsBits, SlashCommandBuilder, escapeMarkdown, Client, InteractionContextType } from 'discord.js';
 import { Interaction } from '../../NormalInteraction.js';
 
 class Kick extends Interaction {
@@ -7,7 +6,7 @@ class Kick extends Interaction {
     .setName('kick')
     .setDescription("kick a user")
     .setDefaultMemberPermissions(PermissionFlagsBits.KickMembers)
-    .setDMPermission(false)
+    .setContexts(InteractionContextType.Guild)
     .addUserOption(o => o
       .setDescription("The user to kick")
       .setName('user')
