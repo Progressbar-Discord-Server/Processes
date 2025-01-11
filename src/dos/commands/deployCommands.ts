@@ -1,5 +1,4 @@
-import type { Client } from "discord.js";
-import { REST, Routes, type RESTPostAPIApplicationCommandsJSONBody } from "discord.js";
+import { REST, Routes, type RESTPostAPIApplicationCommandsJSONBody, type Client } from "discord.js";
 import type { Config } from "../config.js";
 import { DOSCommands } from "./base.js";
 

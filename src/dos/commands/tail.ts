@@ -1,7 +1,6 @@
 import { DOSCommands } from "./base.js";
-import type { Client } from "discord.js";
 import type { Config } from "../config";
-import { CategoryChannel } from "discord.js";
+import { CategoryChannel, type Client } from "discord.js";
 
 class Tail extends DOSCommands {
   public name = "tail";

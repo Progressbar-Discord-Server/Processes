@@ -1,7 +1,6 @@
 import { DOSCommands } from "./base.js";
-import type { Client } from "discord.js";
 import type { Config } from "../config";
-import { CategoryChannel, PartialGroupDMChannel, ForumChannel, MediaChannel } from "discord.js";
+import { CategoryChannel, PartialGroupDMChannel, ForumChannel, MediaChannel, type Client } from "discord.js";
 
 class Send extends DOSCommands {
   public name = "send";

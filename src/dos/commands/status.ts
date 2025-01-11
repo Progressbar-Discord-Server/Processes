@@ -1,7 +1,6 @@
 import { DOSCommands } from "./base.js";
-import type { Client } from "discord.js";
 import type { Config } from "../config";
-import { PresenceStatusData, ActivitiesOptions } from "discord.js";
+import { PresenceStatusData, ActivitiesOptions, type Client } from "discord.js";
 
 class Status extends DOSCommands {
   public name = "status";

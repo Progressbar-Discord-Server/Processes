@@ -1,6 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
-import { Client } from "discord.js";
 
 class Eval extends Interaction {
   public data = new SlashCommandBuilder()
@@ -16,7 +15,7 @@ class Eval extends Interaction {
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply({ ephemeral: true })
     const code = interaction.options.getString("code", true)
-    const client: Client = interaction.client;
+    const client = interaction.client;
 
     if (!client.config) return interaction.followUp("No configs found, pls add one.");
     if (!(client.config.ownersIds instanceof Array)) return interaction.followUp("Next time, use an array for ownerIds, i can't understand if it's not a array of string...")

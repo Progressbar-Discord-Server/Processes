@@ -1,6 +1,5 @@
 import { ChatInputCommandInteraction, PermissionFlagsBits, SlashCommandBuilder, EmbedBuilder, escapeMarkdown, InteractionContextType } from "discord.js";
 import { Interaction } from "../../../NormalInteraction.js";
-import { Client } from "discord.js";
 
 class Bean extends Interaction {
   public data = new SlashCommandBuilder()
@@ -22,7 +21,7 @@ class Bean extends Interaction {
 
   async execute(interaction: ChatInputCommandInteraction) {
     await interaction.deferReply();
-    const client: Client = interaction.client;
+    const client = interaction.client;
     const user = interaction.options.getUser("user", true);
     const reason = interaction.options.getString("reason") ?? "No reason provided.";
 

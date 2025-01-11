@@ -1,6 +1,5 @@
 import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
 import { Interaction } from "../../NormalInteraction.js";
-import { Client } from "discord.js";
 
 class Wallpaper extends Interaction {
   #lastUse = new Date(0);
@@ -14,7 +13,7 @@ class Wallpaper extends Interaction {
   public beta = false;
   public enable = true;
   async execute(interaction: ChatInputCommandInteraction) {
-    const client: Client = interaction.client;
+    const client = interaction.client;
     const config = client.config?.wallpaper;
 
     if (!config?.allowed.includes(interaction.user.id)) {
